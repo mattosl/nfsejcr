@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"htth://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+  
+    <h:head>
+        <title>NFS-e - GRUPO JCR</title>
+        <meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="icon" type="image/png" href="resources/images/jcr-logo.png"/>
+		<link rel="stylesheet" type="text/css" href="resources/css/custom-login.css" />
+    </h:head>
+    <h:body>
+	<div class="login-page">
+		<div style="text-align: center;">
+			<img  src="resources/images/jcr-logo.png" alt="Grupo JCR" height="150"	width="150"  />
+			<h1 class="font-h1">SISTEMA DE NFS-e</h1>
+		</div>
+		<div class="form">
+			<h:form styleClass="login-form">
+				<h:inputText value="#{loginController.login}" label="Login" styleClass="input-login">
+					<f:passThroughAttribute name="placeholder" value="Login" />
+				</h:inputText>
+				<h:inputSecret value="#{loginController.senha}" label="Senha" styleClass="input-login">
+					<f:passThroughAttribute name="placeholder" value="Senha" />
+				</h:inputSecret>
+				<p:commandButton styleClass="button-login" action="#{loginController.doLogin()}" value="ENTRAR" update="@form"  />
+			</h:form>
+		</div>
+	</div>
+	<div class="footer">JCR Administração e Participações Ltda © <strong>2018</strong>.</div>
+</h:body>
+</html>

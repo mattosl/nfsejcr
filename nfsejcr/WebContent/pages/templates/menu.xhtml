@@ -10,14 +10,14 @@
 	<h:form>
 		<ul class="sidebar-menu">
 			<li class="#{activeMenu eq 'inicio' ? 'active' : ''}">
-				<p:link href="/pages/welcome.jsf"> 
+				<p:link href="/pages/login/welcome.xhtml"> 
 					<i class="fa fa-home"></i>  <span>Início </span> 
 				</p:link>
 			</li>
 			
 <!-- 		####### CONFIGURAÇÃO DO MENU ###### -->
-			<li class="treeview #{activeMenu eq 'demanda' ? 'active' : ''}">
-				<p:link href="/pages/demanda/listar_demanda.jsf" ajax="false" title="NFS-e">
+			<li class="treeview #{activeMenu eq 'nfse' ? 'active' : ''}">
+				<p:link href="/pages/nfse/listar_nfse.xhtml" ajax="false" title="NFS-e">
 					<i class="fa fa-file-text" title="NFS-e"></i> 
 					<span>NFS-e</span>
 				</p:link>

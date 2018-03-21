@@ -35,11 +35,11 @@
 			<section class="content">
 			<div class="row" jsf:id="divMessage">
 				<div class="col-md-12 col-sm-12 col-xs-12">
-					<p:messages id="messages" closable="true" globalOnly="false"
-						autoUpdate="true" redisplay="true" showIcon="true" />
+					<p:messages id="messages" closable="true" globalOnly="false" redisplay="true" showIcon="true" />
 					<!--  <p:growl autoUpdate="true" showDetail="false" id="g_mensagens" /> -->
 					<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
 						closable="false" resizable="false" showHeader="false">
+<!-- 							<p:graphicImage name="/images/ajax_loader_red.gif" /> -->
 					</p:dialog>
 					<p:ajaxStatus onstart="PF('statusDialog').show()"
 						onsuccess="PF('statusDialog').hide()" onerror="ajaxOnError()"
@@ -54,7 +54,6 @@
 	</div>
 	<ui:insert name="popups" />
 	<h:outputScript library="scripts" name="bootstrap.min.js" />
-	<h:outputScript library="scripts" name="jquery.min.js" />
 	<h:outputScript library="scripts" name="nfsejcr.min.js" />
 </h:body>
 </html>

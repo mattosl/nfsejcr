@@ -12,8 +12,8 @@
 		<ui:param name="activeSubmenu" value=""/>
     	<ui:param name="activeMenu" value="nfse"/>
 			
-    	<ui:define name="pageTitle"><i class="fa fa-home fa-1x cor-padrao"></i> Sistema NFS-e</ui:define>
-    	<ui:define name="pageDescription">Pagina Inicial</ui:define>
+    	<ui:define name="pageTitle"><i class="fa fa-home fa-1x cor-padrao"></i> NFS-e</ui:define>
+    	<ui:define name="pageDescription">Consultar</ui:define>
 		<ui:define name="body">
 			<div class="page-content-central ui-fluid">
 				<h:form id="nfseForm" acceptcharset="ISO-8859-1" lang="pt_BR">
@@ -61,21 +61,112 @@
 							                	<div class="input-group-addon">
 							                		<i class="fa fa-calendar"></i>
 							                	</div>
-							                	<p:calendar styleClass="pull-right" id="dtEmissaoInicio" value="#{consultarNFSEController.dtInicio}" placeholder="Data Início" />
+							                	<p:calendar styleClass="pull-right" id="dtEmissaoInicio" value="#{consultarNFSEController.dtInicio}" readonlyInput="true" locale="pt_BR"/>
 							                </div>
 						                </div>
+						                <label for="dtEmissaoFinal" class="col-sm-1 col-md-1 col-lg-1 control-label" style="text-align:center;">até</label>
 						                <div class="col-xs-12 col-md-2 col-lg-2">
 						                	<div class="input-group date">
 							                	<div class="input-group-addon">
 							                		<i class="fa fa-calendar"></i>
 							                	</div>
-							                	<p:calendar styleClass="pull-right" id="dtEmissaoFinal" value="#{consultarNFSEController.dtInicio}" placeholder="Data Fim" />
+							                	<p:calendar styleClass="pull-right" id="dtEmissaoFinal" value="#{consultarNFSEController.dtInicio}" readonlyInput="true" locale="pt_BR"/>
 							                </div>
 						                </div>
 						            </div>
 								</div>
+								<div class="form-group">
+									<label for="situacao" class="col-sm-2 control-label">Situação:</label>
+									<div class="radio col-sm-10">
+										<p:selectOneRadio id="situacao" value="#{radioView.console}">
+										    <f:selectItem itemLabel="Pendente" itemValue="Xbox One"  />
+										    <f:selectItem itemLabel="Exportada" itemValue="PS4" />
+										</p:selectOneRadio>
+									</div>
+								</div>
+							</div>
+							<div class="box-footer">
+								<p:panelGrid id="botoes" columns="2" styleClass="ui-panelgrid-blank" layout="grid" columnClasses="ui-grid-col-2, ui-grid-col-2">
+									<p:commandButton
+										styleClass="btn btn-default"
+										icon="fa fa-search"
+										value="Pesquisar"
+										id="btn_pesquisar"
+										process="@form"
+										ajax="true" />
+									<p:commandButton
+										styleClass="btn btn-default"
+										icon="fa fa-plus"
+										value="Incluir"
+										id="btn_incluir"
+										process="@form"
+										ajax="true" />
+								</p:panelGrid>
 							</div>
 						</div>
+					</p:panel>
+				</h:form>
+				
+				<h:form id="gridForm" acceptcharset="ISO-8859-1" lang="pt_BR">
+					<p:dataTable var="car" value="#{consultarNFSEController.teste}" tableStyle="table-layout: auto; word-break: keep-all;" selection="#{consultarNFSEController.testeSelecionados}" rowKey="#{car}">
+						
+						<p:column selectionMode="multiple" />
+					    <p:column headerText="Situação" style="text-align:center;">
+					    	<span class="label label-default">Pendente</span>
+					    </p:column>
+					 
+					    <p:column headerText="Data de Emissão" style="text-align:center;" >
+					        <h:outputText value="31/03/2018" />
+					    </p:column>
+					 
+					    <p:column headerText="Nº" style="text-align:center;">
+					        <h:outputText value="95" />
+					    </p:column>
+					 
+					    <p:column headerText="Valor (R$)" style="text-align:center;">
+					        <h:outputText value="8.000,00" />
+					    </p:column>
+					    
+					    <p:column headerText="Município" style="text-align:center;">
+					        <h:outputText value="CURITIBA" />
+					    </p:column>
+					    
+					    <p:column headerText="Prestador" style="text-align:center;">
+					        <h:outputText value="EWAVE" />
+					    </p:column>
+					    
+					    <p:column headerText="Tomador" style="text-align:center;">
+					        <h:outputText value="JCR ADMINISTRAÇÃO E PARTICIPAÇÕES" />
+					    </p:column>
+					    
+					    <p:column headerText="Detalhes" style="text-align: center;">
+							<p:commandLink ajax="true" process="@this" >
+								<h:outputText value="" title="Detalhes" styleClass="fa fa-file-text" />
+							</p:commandLink>
+						</p:column>
+						
+						<p:column headerText="Download" style="text-align: center;">
+							<p:commandLink ajax="true" process="@this" >
+								<h:outputText value="" title="Download" styleClass="fa fa-download" />
+							</p:commandLink>
+						</p:column>
+						
+						<p:column headerText="Excluir" style="text-align: center;">
+							<p:commandLink ajax="true" process="@this" >
+								<h:outputText value="" title="Excluir" styleClass="fa fa-times" />
+							</p:commandLink>
+						</p:column>
+					</p:dataTable>
+					<p:panel toggleable="false" id="panelExportar" styleClass="box">
+						<p:panelGrid id="botoes" columns="1" styleClass="ui-panelgrid-blank" layout="grid" columnClasses="ui-grid-col-2">
+							<p:commandButton
+								styleClass="btn btn-default"
+								icon="fa fa-mail-reply"
+								value="Exportar para RM"
+								id="btn_exportar_rm"
+								process="@form"
+								ajax="true" />
+						</p:panelGrid>
 					</p:panel>
 				</h:form>
 			</div>

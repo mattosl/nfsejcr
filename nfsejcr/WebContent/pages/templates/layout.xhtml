@@ -17,6 +17,7 @@
 	<h:outputStylesheet library="css" name="ionicons.min.css"/>
 	<h:outputStylesheet library="css" name="nfsejcr.min.css"/>
 	<h:outputStylesheet library="css" name="skin-red-light.min.css"/>
+	<h:outputStylesheet library="css" name="custom.css"/>
 	<ui:insert name="head" />
 </h:head>
 <h:body styleClass="hold-transition skin-red-light sidebar-mini">
@@ -39,7 +40,7 @@
 					<!--  <p:growl autoUpdate="true" showDetail="false" id="g_mensagens" /> -->
 					<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
 						closable="false" resizable="false" showHeader="false">
-<!-- 							<p:graphicImage name="/images/ajax_loader_red.gif" /> -->
+							<h:graphicImage name="/images/ajax_loader_red.gif" />
 					</p:dialog>
 					<p:ajaxStatus onstart="PF('statusDialog').show()"
 						onsuccess="PF('statusDialog').hide()" onerror="ajaxOnError()"
@@ -54,6 +55,7 @@
 	</div>
 	<ui:insert name="popups" />
 	<h:outputScript library="scripts" name="bootstrap.min.js" />
+	<h:outputScript library="scripts" name="locale-primefaces.js" />
 	<h:outputScript library="scripts" name="nfsejcr.min.js" />
 </h:body>
 </html>

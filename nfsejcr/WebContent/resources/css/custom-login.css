@@ -99,10 +99,14 @@
   color: #EF3B3A;
 }
 body {
-  background: url("../images/tecnologia.jpg");
-  font-family: "Roboto", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;      
+	background: url("../images/tecnologia.jpg") fixed no-repeat;
+	font-family: "Roboto", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-background-size: cover;  
+	-o-background-size: cover;  
+	-moz-background-size: cover;  
+	background-size: cover;
 }
 
 .footer {

@@ -21,10 +21,4 @@
 		<exception-handler-factory>br.com.grupojcr.nfse.util.exception.ExceptionHandlerFacesFactory</exception-handler-factory>
 	</factory>
 	
-	<!-- Realiza o log das fases do JSF, facilitando a compreencao do fluxo da requisicao 
-		 NAO UTILIZAR EM AMBIENTE DE PRODUCAO
-	<lifecycle>
-		<phase-listener>br.gov.pr.celepar.utils.listener.FacesLifeCycleListener</phase-listener>
-	</lifecycle> -->
-
 </faces-config>

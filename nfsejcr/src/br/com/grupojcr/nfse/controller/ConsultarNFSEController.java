@@ -19,6 +19,10 @@ public class ConsultarNFSEController implements Serializable {
 	
 	private List<String> teste = new ArrayList<String>(Arrays.asList("teste", "teste", "teste", "teste"));
 	private List<String> testeSelecionados = new ArrayList<String>();
+	
+	public String iniciarIncluir() {
+		return "/pages/nfse/incluir_nfse.xhtml";
+	}
 
 	public Date getDtInicio() {
 		return dtInicio;

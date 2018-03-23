@@ -28,6 +28,19 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
+	<servlet>
+		<servlet-name>QuartzInitializer</servlet-name>
+		<servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<display-name>Agendamentos NFSE</display-name>
+		<servlet-name>IniciarQuartzServlet</servlet-name>
+		<servlet-class>br.com.grupojcr.nfse.quartz.AgendarQuartzServlet</servlet-class>
+		<load-on-startup>0</load-on-startup>
+	</servlet>
+	
 	<context-param>
 		<param-name>javax.faces.PROJECT_STAGE</param-name>
 		<param-value>Development</param-value>
@@ -55,7 +68,7 @@
 	
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-		<param-value>client</param-value>
+		<param-value>server</param-value>
 	</context-param>
 	
 	<context-param>
@@ -67,6 +80,9 @@
 		<param-name>primefaces.TRANSFORM_METADATA</param-name>
 		<param-value>true</param-value>
 	</context-param>
+	
+	
+	
 	
 	<!-- JSF URL mapping -->
 	<servlet-mapping>

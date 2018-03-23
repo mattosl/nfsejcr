@@ -6,13 +6,13 @@
 
 	<application>
 		<!-- Define arquivo que contem as mensagens da aplicacao  -->
-<!-- 		<resource-bundle> -->
-<!-- 			<base-name>ApplicationMessages</base-name> -->
-<!-- 			<var>appMessages</var> -->
-<!-- 		</resource-bundle> -->
+		<resource-bundle>
+			<base-name>ApplicationMessages</base-name>
+			<var>appMessages</var>
+		</resource-bundle>
 		
 		<!-- Define arquivo customizado para as mensagens das validacoes JSF e BeanValidation. -->
-<!-- 		<message-bundle>ValidationMessages</message-bundle> -->
+		<message-bundle>ValidationMessages</message-bundle>
 				
 	</application>	
 

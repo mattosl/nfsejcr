@@ -25,9 +25,9 @@
              <div class="navbar-custom-menu">
                  <ul class="nav navbar-nav">
                      <li class="user user-menu">
-                         <a href="#" target="_blank">
+                         <a href="#">
                          	<i class="fa fa-user text-nav-icon x-bigger"></i>
-                            <span class="hidden-xs">Leonan Yglecias Mattos</span>
+                            <span class="hidden-xs">#{usuarioLogado}</span>
                          </a>
                      </li>
                  </ul>
@@ -37,7 +37,7 @@
                              <i class="fa fa-power-off text-nav-icon x-bigger"></i>
                          </a>
                          <h:form>
-	                         <p:remoteCommand name="logout" action="#{loginController.doLogout()}" />
+	                         <p:remoteCommand name="logout" action="#{loginController.doLogout()}" immediate="true" />
                          </h:form>
                      </li>
                  </ul>

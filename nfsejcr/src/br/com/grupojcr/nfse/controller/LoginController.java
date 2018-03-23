@@ -2,12 +2,19 @@ package br.com.grupojcr.nfse.controller;
 
 import java.io.Serializable;
 
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.primefaces.PrimeFaces;
+
+import br.com.grupojcr.nfse.business.LoginBusiness;
+import br.com.grupojcr.nfse.entity.Usuario;
+import br.com.grupojcr.nfse.util.Util;
 
 @ManagedBean
 @SessionScoped
@@ -16,7 +23,7 @@ public class LoginController implements Serializable {
 	private static final long serialVersionUID = -1133855238493822199L;
 	
 	// Simple user database :)
-    private static final String[] users = {"admin:admin"};
+//    private static final String[] users = {"admin:admin"};
 	
 	private String login;
 	private String senha;
@@ -26,27 +33,45 @@ public class LoginController implements Serializable {
 	@ManagedProperty(value="#{navegacaoController}")
 	private NavegacaoController navegacaoController;
 	
+	@EJB
+	private LoginBusiness loginBusiness;
+	
 	 /**
      * Login operation.
      * @return
      */
     public String doLogin() {
         // Get every user from our sample database :)
-        for (String user: users) {
-            String dbUsername = user.split(":")[0];
-            String dbPassword = user.split(":")[1];
-             
-            // Successful login
-            if (dbUsername.equals(login) && dbPassword.equals(senha)) {
-            	logado = true;
-                return navegacaoController.redirectToWelcome();
-            }
-        }
+//        for (String user: users) {
+//            String dbUsername = user.split(":")[0];
+//            String dbPassword = user.split(":")[1];
+//             
+//            // Successful login
+//            if (dbUsername.equals(login) && dbPassword.equals(senha)) {
+//            	logado = true;
+//                return navegacaoController.redirectToWelcome();
+//            }
+//        }
+    	
+    	try {
+			Usuario user = loginBusiness.obterUsuarioPorLoginSenha(login, senha);
+			
+			if(Util.isNotNull(user)) {
+				logado = true;
+				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioLogado", user.getNome());
+				return navegacaoController.redirectToWelcome();
+			} else {
+				logado = false;
+			}
+			
          
-        showMessage();
-         
-        // To to login page
-        return navegacaoController.toLogin();
+	        showMessage();
+	         
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	// To to login page
+    	return navegacaoController.toLogin();
          
     }
      
@@ -91,9 +116,9 @@ public class LoginController implements Serializable {
 		this.navegacaoController = navegacaoController;
 	}
 
-	public static String[] getUsers() {
-		return users;
-	}
+//	public static String[] getUsers() {
+//		return users;
+//	}
 
 	public boolean isLogado() {
 		return logado;

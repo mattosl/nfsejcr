@@ -9,11 +9,6 @@
 	xmlns:jsf="http://xmlns.jcp.org/jsf" >
 	
 	<ui:composition template="/pages/templates/layout.xhtml">
-		<ui:define name="head">
-			<h:outputScript library="scripts" name="dropzone.js" />
-			<h:outputStylesheet library="css" name="dropzone.css"/>
-			<h:outputScript>Dropzone.options.uploadForm = { paramName: "uploadForm:file" };</h:outputScript>
-		</ui:define>
 		<ui:param name="activeSubmenu" value=""/>
     	<ui:param name="activeMenu" value="nfse"/>
 			

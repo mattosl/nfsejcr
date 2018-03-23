@@ -1,6 +1,7 @@
 package br.com.grupojcr.nfse.controller;
 
 import java.io.Serializable;
+import java.util.Calendar;
 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
@@ -8,19 +9,22 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.primefaces.PrimeFaces;
 
 import br.com.grupojcr.nfse.business.LoginBusiness;
 import br.com.grupojcr.nfse.entity.Usuario;
 import br.com.grupojcr.nfse.util.Util;
+import br.com.grupojcr.nfse.util.exception.ApplicationException;
 
 @ManagedBean
 @SessionScoped
 public class LoginController implements Serializable {
 
 	private static final long serialVersionUID = -1133855238493822199L;
+	
+	protected static Logger LOG = Logger.getLogger(LoginController.class);
 	
 	// Simple user database :)
 //    private static final String[] users = {"admin:admin"};
@@ -39,8 +43,9 @@ public class LoginController implements Serializable {
 	 /**
      * Login operation.
      * @return
+	 * @throws ApplicationException 
      */
-    public String doLogin() {
+    public String doLogin() throws ApplicationException {
         // Get every user from our sample database :)
 //        for (String user: users) {
 //            String dbUsername = user.split(":")[0];
@@ -57,8 +62,11 @@ public class LoginController implements Serializable {
 			Usuario user = loginBusiness.obterUsuarioPorLoginSenha(login, senha);
 			
 			if(Util.isNotNull(user)) {
-				logado = true;
+				user.setDtUltimoLogin(Calendar.getInstance().getTime());
+				loginBusiness.alterarUsuario(user);
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioLogado", user.getNome());
+				
+				logado = true;
 				return navegacaoController.redirectToWelcome();
 			} else {
 				logado = false;
@@ -68,7 +76,10 @@ public class LoginController implements Serializable {
 	        showMessage();
 	         
     	} catch (Exception e) {
-    		e.printStackTrace();
+    		LOG.error(e.getMessage(), e);
+			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ops!", "Sistema indisponível, contacte o administrador.");
+        
+			PrimeFaces.current().dialog().showMessageDynamic(message);
     	}
     	// To to login page
     	return navegacaoController.toLogin();

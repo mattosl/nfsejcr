@@ -110,7 +110,7 @@ body {
 }
 
 .footer {
-  position: absolute;
+  position: fixed;
   font-size: 12px;
   font-family: "Roboto", sans-serif;
   right: 0;

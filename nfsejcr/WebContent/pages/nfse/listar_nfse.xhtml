@@ -86,7 +86,7 @@
 								</div>
 							</div>
 							<div class="box-footer">
-								<p:panelGrid id="botoes" columns="2" styleClass="ui-panelgrid-blank" layout="grid" columnClasses="ui-grid-col-2, ui-grid-col-2">
+								<p:panelGrid id="botoes" columns="3" styleClass="ui-panelgrid-blank" layout="grid" columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-2">
 									<p:commandButton
 										styleClass="btn btn-default"
 										icon="fa fa-search"
@@ -101,6 +101,14 @@
 										action="#{consultarNFSEController.iniciarIncluir()}"
 										immediate="true"
 										id="btn_incluir"
+										ajax="false" />
+									<p:commandButton
+										styleClass="btn btn-default"
+										icon="fa fa-refresh"
+										value="Atualizar"
+										action="#{consultarNFSEController.iniciarIncluir()}"
+										immediate="true"
+										id="btn_atualizar"
 										ajax="false" />
 								</p:panelGrid>
 							</div>

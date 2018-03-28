@@ -33,7 +33,7 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 			return null;
 		} catch (Exception e) {
 			log.error(KEY_ERRO, e);
-			throw new ApplicationException("mensagem.padrao.ERRO_PTE", new String[] { "obterUsuarioPorLoginSenha" }, e);
+			throw new ApplicationException("message.default.erro", new String[] { "obterUsuarioPorLoginSenha" }, e);
 		}
 	}
 

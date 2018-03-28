@@ -1,9 +1,13 @@
 package br.com.grupojcr.nfse.quartz;
 
+import javax.naming.InitialContext;
+
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
+import br.com.grupojcr.nfse.business.MonitoramentoBusiness;
 
 public class MonitoramentoXML implements Job {
 	
@@ -20,11 +24,10 @@ public class MonitoramentoXML implements Job {
 		try {
 			log.info("Executando Monitoramento XML...");
 			
-//			InitialContext initialContext = new InitialContext();
-//			BloqueioDAO dao = (BloqueioDAO) initialContext.lookup("java:global/rhseed/BloqueioDAO");
-//			dao.desbloquearServidoresNaoUtilizado();
-//			dao.desbloquearSuprimentos();
-//			
+			InitialContext initialContext = new InitialContext();
+			MonitoramentoBusiness business = (MonitoramentoBusiness) initialContext.lookup("java:global/nfsejcr/MonitoramentoBusiness");
+			
+			business.lerXML();
 			log.info("Finalizado Monitoramento XML...");
 			
 		} catch (Exception e) {

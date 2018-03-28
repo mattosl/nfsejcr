@@ -2,10 +2,10 @@ package br.com.grupojcr.nfse.business;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.util.Date;
 
 import javax.activation.DataHandler;
-import javax.ejb.Asynchronous;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -21,34 +21,54 @@ import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.mail.search.FlagTerm;
 import javax.naming.InitialContext;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+
+import org.apache.log4j.Logger;
+
+import br.com.grupojcr.nfse.entity.xml.NfseXML;
+import br.com.grupojcr.nfse.util.exception.ApplicationException;
 
 @Stateless
 public class MonitoramentoBusiness {
 	
-	@Asynchronous
-	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public void obterEmail() throws Exception {
+	private static Logger log = Logger.getLogger(MonitoramentoBusiness.class);
+	
+	public void lerXML() throws ApplicationException {
 		try {
+			lerEmail();
+		} catch (ApplicationException e) {
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new ApplicationException("mensagem.padrao.ERRO_PTE", new String[] { "obterUsuarioPorLoginSenha" }, e);
+		}
+		
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public void lerEmail() throws Exception {
+		try {
+			// Obter session configurado no servidor
 			InitialContext ic = new InitialContext();
 			Session session = ((Session) ic.lookup("java:jboss/mail/MailService"));
 			
+			// Obter Pasta INBOX
 			Store store = session.getStore("imap");
 			store.connect();
 			
 			Folder folder = store.getFolder("inbox");
 			 
 			if (!folder.exists()) {
-				System.out.println("No INBOX...");
 				System.exit(0);
 			}
 			folder.open(Folder.READ_WRITE);
 			Message[] msg = folder.search(new FlagTerm(new Flags(Flags.Flag.SEEN), false));
 
 			for (int i = 0; i < msg.length; i++) {
-				hasAttachments(msg[i]);
-				lerEmail(msg[i]);
-				msg[i].setFlag(Flags.Flag.SEEN, true);
-				System.out.println();
+				if(hasAttachments(msg[i])) {
+					lerAnexos(msg[i]);
+				}
 			}
 			folder.close(true);
 			store.close();
@@ -58,19 +78,19 @@ public class MonitoramentoBusiness {
 		}
 	}
 	
-	public static void lerEmail(Message message) {  
-        try {  
+	public void lerAnexos(Message message) {  
+        try { 
             // Get the header information  
             String from = ((InternetAddress) message.getFrom()[0]).getPersonal();  
             if (from == null) {  
                 from = ((InternetAddress) message.getFrom()[0]).getAddress();  
             }  
-            System.out.println("FROM: " + from);  
+            log.info("FROM: " + from);  
             String subject = message.getSubject();  
-            System.out.println("SUBJECT: " + subject);  
-            Date dataa = message.getReceivedDate();  
-            System.out.println("Numero da MSG: " + message.getMessageNumber());  
-            System.out.println("Recebido em: " + dataa);  
+            log.info("SUBJECT: " + subject);  
+            Date data = message.getReceivedDate();  
+            log.info("Numero da MSG: " + message.getMessageNumber());  
+            log.info("Recebido em: " + data);  
             // -- Get the message part (i.e. the message itself) --  
             Part messagePart = message;  
             Object content = messagePart.getContent();  
@@ -78,41 +98,46 @@ public class MonitoramentoBusiness {
             if (content instanceof Multipart) {  
                 messagePart = ((Multipart) content).getBodyPart(0);
                 Multipart multipart = (Multipart) message.getContent();
-                System.out.println("[ Multipart Message ]");
                 for (int j = 0; j < multipart.getCount(); j++) {
 					BodyPart bodyPart = multipart.getBodyPart(j);
 
 					String disposition = bodyPart.getDisposition();
 
-					if (disposition != null && (disposition.equalsIgnoreCase("ATTACHMENT"))) { // BodyPart.ATTACHMENT
-																								// doesn't
-																								// work
-																								// for
-																								// gmail
-						System.out.println("Mail have some attachment");
+					if (disposition != null && (disposition.equalsIgnoreCase("ATTACHMENT"))) {
+						log.info("ENCONTRADO ANEXO");
 
 						DataHandler handler = bodyPart.getDataHandler();
-						System.out.println("file name : " + handler.getName());
 						InputStream inputStream = handler.getInputStream();
+						log.info("file name : " + handler.getName());
 						String extensao = handler.getName().substring(handler.getName().lastIndexOf("."), handler.getName().length());
-						
-						int data = inputStream.read();
-						while (data != -1) {
-							 System.out.println((char) data);
-
-							data = inputStream.read();
-
+						if(extensao.equalsIgnoreCase(".XML")) {
+							String xml = "";
+							int arquivo = inputStream.read();
+							while (arquivo != -1) {
+								xml += ((char) arquivo);
+								
+								arquivo = inputStream.read();
+								
+							}
+							inputStream.close();
+							
+							JAXBContext context = JAXBContext.newInstance(NfseXML.class);
+							Unmarshaller unmarshaller = context.createUnmarshaller();
+							NfseXML nfse = (NfseXML) unmarshaller.unmarshal(new StringReader(xml));
+							System.out.println(nfse);
+							
+							message.setFlag(Flags.Flag.SEEN, true);
 						}
-						inputStream.close();
+						
+						
 					} else {
-						System.out.println("Body: " + bodyPart.getContent());
+						log.info("Body: " + bodyPart.getContent());
 						content = bodyPart.getContent().toString();
 					}
                 }
             }  
-            System.out.println("-----------------------------");  
         } catch (Exception ex) {  
-            ex.printStackTrace();  
+        	log.error(ex.getStackTrace());  
         }  
     }
 	

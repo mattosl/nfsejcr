@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 public class InfNfseXML {
 	
 	@XmlElement(name = "Numero", required = true)
-	private Integer numero;
+	private Long numero;
 	
 	@XmlElement(name = "CodigoVerificacao", required = true)
 	private String codigoVerificacao;
@@ -58,11 +58,11 @@ public class InfNfseXML {
 	@XmlElement(name = "TomadorServico")
 	private TomadorServicoXML tomadorServico;
 	
-	public Integer getNumero() {
+	public Long getNumero() {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
+	public void setNumero(Long numero) {
 		this.numero = numero;
 	}
 

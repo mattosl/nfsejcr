@@ -2,10 +2,10 @@ package br.com.grupojcr.nfse.business;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.util.Date;
 
 import javax.activation.DataHandler;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -21,18 +21,23 @@ import javax.mail.Store;
 import javax.mail.internet.InternetAddress;
 import javax.mail.search.FlagTerm;
 import javax.naming.InitialContext;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
 
-import br.com.grupojcr.nfse.entity.xml.NfseXML;
+import br.com.grupojcr.nfse.dao.UsuarioDAO;
+import br.com.grupojcr.nfse.entity.Usuario;
 import br.com.grupojcr.nfse.util.exception.ApplicationException;
 
 @Stateless
 public class MonitoramentoBusiness {
 	
 	private static Logger log = Logger.getLogger(MonitoramentoBusiness.class);
+	
+	@EJB
+	private NFSEBusiness nfseBusiness;
+	
+	@EJB
+	private UsuarioDAO daoUsuario;
 	
 	public void lerXML() throws ApplicationException {
 		try {
@@ -121,10 +126,8 @@ public class MonitoramentoBusiness {
 							}
 							inputStream.close();
 							
-							JAXBContext context = JAXBContext.newInstance(NfseXML.class);
-							Unmarshaller unmarshaller = context.createUnmarshaller();
-							NfseXML nfse = (NfseXML) unmarshaller.unmarshal(new StringReader(xml));
-							System.out.println(nfse);
+							Usuario usuario = daoUsuario.obter(1L);
+							nfseBusiness.incluirXML(xml, usuario);
 							
 							message.setFlag(Flags.Flag.SEEN, true);
 						}

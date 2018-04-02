@@ -1,7 +1,7 @@
 package br.com.grupojcr.nfse.enumerator;
 
 public enum MunicipioIBGE {
-	CURITIBA(4106902L, "Curitiba");
+	CURITIBA(4106902L, "CURITIBA");
 	
 	private Long codigo;
 	private String municipio;

@@ -2,6 +2,7 @@ package br.com.grupojcr.nfse.business;
 
 import java.io.StringReader;
 import java.util.Calendar;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -125,6 +126,17 @@ public class NFSEBusiness {
 			throw e;
 		} catch (Exception e) {
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "incluirXML" }, e);
+		}
+	}
+	
+	public List<Coligada> listarColigadasAtivas() throws ApplicationException {
+		try {
+			return daoColigada.listarColigadasAtivas();
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
+		} catch (Exception e) {
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "listarColigadasAtivas" }, e);
 		}
 	}
 }

@@ -12,6 +12,9 @@
 		<ui:param name="activeSubmenu" value=""/>
     	<ui:param name="activeMenu" value="nfse"/>
 			
+		<f:metadata>
+			<f:viewAction action="#{consultarNFSEController.iniciarProcesso()}" />
+		</f:metadata>
     	<ui:define name="pageTitle"><i class="fa fa-home fa-1x cor-padrao"></i> NFS-e</ui:define>
     	<ui:define name="pageDescription">Consultar</ui:define>
 		<ui:define name="body">
@@ -24,36 +27,6 @@
 						<div class="form-horizontal">
 							<div class="box-body">
 								<div class="form-group">
-									<label for="empresa" class="col-sm-2 control-label">Empresa:</label>
-
-									<div class="col-sm-10">
-								        <h:selectOneMenu id="empresa" styleClass="form-control">
-								        	<f:selectItem itemLabel="Selecione" itemValue="" />
-								            <f:selectItem itemLabel="JCR ADMINISTRAÇÕES E PARTICIPAÇÕES" itemValue="Xbox One" />
-								            <f:selectItem itemLabel="LOGTRADE" itemValue="PS4" />
-								            <f:selectItem itemLabel="SEAGULL" itemValue="Wii U" />
-								        </h:selectOneMenu>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="municipio" class="col-sm-2 control-label">Município:</label>
-
-									<div class="col-sm-10">
-								        <h:selectOneMenu id="municipio" styleClass="form-control">
-								        	<f:selectItem itemLabel="Selecione" itemValue="" />
-								            <f:selectItem itemLabel="CURITIBA" itemValue="Xbox One" />
-								            <f:selectItem itemLabel="PONTAL DO PARANA" itemValue="PS4" />
-								        </h:selectOneMenu>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="numNota" class="col-sm-2 control-label">Número da Nota:</label>
-
-									<div class="col-sm-10 col-md-2">
-								         <h:inputText value="" styleClass="form-control" id="numNota" />
-									</div>
-								</div>
-								<div class="form-group">
 									<label for="dtEmissaoInicio" class="col-sm-2 control-label">Data de Emissão:</label>
 									<div class="row">
 						                <div class="col-xs-12 col-md-2 col-lg-2">
@@ -61,7 +34,7 @@
 							                	<div class="input-group-addon">
 							                		<i class="fa fa-calendar"></i>
 							                	</div>
-							                	<p:calendar styleClass="pull-right" id="dtEmissaoInicio" value="#{consultarNFSEController.dtInicio}" readonlyInput="true" locale="pt_BR"/>
+							                	<p:calendar styleClass="pull-right" id="dtEmissaoInicio" value="#{consultarNFSEController.filtro.dtInicial}" readonlyInput="true" locale="pt_BR"/>
 							                </div>
 						                </div>
 						                <label for="dtEmissaoFinal" class="col-sm-1 col-md-1 col-lg-1 control-label" style="text-align:center;">até</label>
@@ -70,17 +43,46 @@
 							                	<div class="input-group-addon">
 							                		<i class="fa fa-calendar"></i>
 							                	</div>
-							                	<p:calendar styleClass="pull-right" id="dtEmissaoFinal" value="#{consultarNFSEController.dtInicio}" readonlyInput="true" locale="pt_BR"/>
+							                	<p:calendar styleClass="pull-right" id="dtEmissaoFinal" value="#{consultarNFSEController.filtro.dtFinal}" readonlyInput="true" locale="pt_BR"/>
 							                </div>
 						                </div>
 						            </div>
 								</div>
 								<div class="form-group">
+									<label for="empresa" class="col-sm-2 control-label">Empresa:</label>
+
+									<div class="col-sm-10">
+								        <h:selectOneMenu id="empresa" styleClass="form-control" value="#{consultarNFSEController.filtro.coligada}">
+								        	<f:selectItem itemLabel="Todas" itemValue="" noSelectionOption="false" />
+								        	<f:selectItems value="#{consultarNFSEController.listaColigada}" var="coligada" itemLabel="#{coligada.razaoSocial}" itemValue="#{coligada}" />
+								        </h:selectOneMenu>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="municipio" class="col-sm-2 control-label">Município:</label>
+
+									<div class="col-sm-10">
+								        <h:selectOneMenu id="municipio" styleClass="form-control" value="#{consultarNFSEController.filtro.municipio}">
+								        	<f:selectItem itemLabel="Todos" itemValue="" noSelectionOption="false" />
+								        	<f:selectItems value="#{consultarNFSEController.listaMunicipio}" var="municipio" itemLabel="#{municipio.municipio}" itemValue="#{municipio}" />
+								        </h:selectOneMenu>
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="numNota" class="col-sm-2 control-label">Número da Nota:</label>
+
+									<div class="col-sm-10 col-md-2">
+								         <h:inputText value="#{consultarNFSEController.filtro.numeroNota}" styleClass="form-control" id="numNota" />
+									</div>
+								</div>
+								<div class="form-group">
 									<label for="situacao" class="col-sm-2 control-label">Situação:</label>
 									<div class="radio col-sm-10">
-										<p:selectOneRadio id="situacao" value="#{radioView.console}">
-										    <f:selectItem itemLabel="Pendente" itemValue="Xbox One"  />
-										    <f:selectItem itemLabel="Exportada" itemValue="PS4" />
+										<p:selectOneRadio id="situacao" value="#{consultarNFSEController.filtro.situacao}">
+										    <f:selectItem itemLabel="Pendente" itemValue="1"  />
+										    <f:selectItem itemLabel="Exportada" itemValue="2" />
+										    <f:selectItem itemLabel="Removida" itemValue="3" />
+										    <f:selectItem itemLabel="Todas" itemValue="4" />
 										</p:selectOneRadio>
 									</div>
 								</div>
@@ -93,6 +95,8 @@
 										value="Pesquisar"
 										id="btn_pesquisar"
 										process="@form"
+										action="#{consultarNFSEController.pesquisar()}"
+										update=":gridForm"
 										ajax="true" />
 									<p:commandButton
 										styleClass="btn btn-default"
@@ -117,7 +121,7 @@
 				</h:form>
 				
 				<h:form id="gridForm" acceptcharset="ISO-8859-1" lang="pt_BR">
-					<p:dataTable var="car" value="#{consultarNFSEController.teste}" tableStyle="table-layout: auto; word-break: keep-all;" selection="#{consultarNFSEController.testeSelecionados}" rowKey="#{car}">
+					<p:dataTable var="car" value="#{consultarNFSEController.teste}" tableStyle="table-layout: auto; word-break: keep-all;" selection="#{consultarNFSEController.testeSelecionados}" rowKey="#{car}" rendered="#{consultarNFSEController.exibirResultado}">
 						
 						<p:column selectionMode="multiple" />
 					    <p:column headerText="Situação" style="text-align:center;">
@@ -166,7 +170,7 @@
 							</p:commandLink>
 						</p:column>
 					</p:dataTable>
-					<p:panel toggleable="false" id="panelExportar" styleClass="box">
+					<p:panel toggleable="false" id="panelExportar" styleClass="box" rendered="#{consultarNFSEController.exibirResultado}">
 						<p:panelGrid id="botoes" columns="1" styleClass="ui-panelgrid-blank" layout="grid" columnClasses="ui-grid-col-2">
 							<p:commandButton
 								styleClass="btn btn-default"

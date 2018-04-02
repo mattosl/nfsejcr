@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import br.com.grupojcr.nfse.enumerator.EstiloXML;
 import br.com.grupojcr.nfse.enumerator.Status;
 
 @Entity
@@ -81,6 +82,10 @@ public class NotaFiscalServico {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ID_USR_INCLUSAO")
 	private Usuario usuarioInclusao;
+	
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "ESTILO_XML", nullable = false)
+	private EstiloXML estiloXML;
 
 	public Long getId() {
 		return id;
@@ -218,6 +223,14 @@ public class NotaFiscalServico {
 		this.usuarioInclusao = usuarioInclusao;
 	}
 
+	public EstiloXML getEstiloXML() {
+		return estiloXML;
+	}
+
+	public void setEstiloXML(EstiloXML estiloXML) {
+		this.estiloXML = estiloXML;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -228,6 +241,7 @@ public class NotaFiscalServico {
 		result = prime * result + ((dataExportacao == null) ? 0 : dataExportacao.hashCode());
 		result = prime * result + ((dataInclusao == null) ? 0 : dataInclusao.hashCode());
 		result = prime * result + ((dtEmissao == null) ? 0 : dtEmissao.hashCode());
+		result = prime * result + ((estiloXML == null) ? 0 : estiloXML.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((identificadorRM == null) ? 0 : identificadorRM.hashCode());
 		result = prime * result + ((municipio == null) ? 0 : municipio.hashCode());
@@ -280,6 +294,8 @@ public class NotaFiscalServico {
 			if (other.dtEmissao != null)
 				return false;
 		} else if (!dtEmissao.equals(other.dtEmissao))
+			return false;
+		if (estiloXML != other.estiloXML)
 			return false;
 		if (id == null) {
 			if (other.id != null)
@@ -335,5 +351,6 @@ public class NotaFiscalServico {
 			return false;
 		return true;
 	}
+
 
 }

@@ -1,7 +1,9 @@
 package br.com.grupojcr.nfse.business;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 
 import javax.activation.DataHandler;
@@ -117,16 +119,14 @@ public class MonitoramentoBusiness {
 						String extensao = handler.getName().substring(handler.getName().lastIndexOf("."), handler.getName().length());
 						if(extensao.equalsIgnoreCase(".XML")) {
 							String xml = "";
-							int arquivo = inputStream.read();
-							while (arquivo != -1) {
-								xml += ((char) arquivo);
-								
-								arquivo = inputStream.read();
-								
+							BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+							String str;
+							while ((str = in.readLine()) != null) {
+								xml += str;
 							}
 							inputStream.close();
 							
-							Usuario usuario = daoUsuario.obter(1L);
+							Usuario usuario = daoUsuario.obterAdministrador();
 							nfseBusiness.incluirXML(xml, usuario);
 							
 							message.setFlag(Flags.Flag.SEEN, true);
@@ -140,7 +140,12 @@ public class MonitoramentoBusiness {
                 }
             }  
         } catch (Exception ex) {  
-        	log.error(ex.getStackTrace());  
+        	log.error(ex.getStackTrace()); 
+        	try {
+				message.setFlag(Flags.Flag.SEEN, false);
+			} catch (MessagingException e) {
+				log.error(e.getStackTrace()); 
+			}
         }  
     }
 	

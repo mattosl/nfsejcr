@@ -36,5 +36,22 @@ public class UsuarioDAO extends GenericDAO<Usuario> {
 			throw new ApplicationException("message.default.erro", new String[] { "obterUsuarioPorLoginSenha" }, e);
 		}
 	}
+	
+	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+	public Usuario obterAdministrador() throws ApplicationException {
+		try{
+			StringBuilder sb = new StringBuilder("SELECT usuario FROM Usuario usuario ");
+			sb.append("WHERE usuario.usuario like 'admin' ");
+			
+			TypedQuery<Usuario> query = manager.createQuery(sb.toString(), Usuario.class);
+			
+			return query.getSingleResult();
+		} catch (NoResultException nR) {
+			return null;
+		} catch (Exception e) {
+			log.error(KEY_ERRO, e);
+			throw new ApplicationException("message.default.erro", new String[] { "obterAdministrador" }, e);
+		}
+	}
 
 }

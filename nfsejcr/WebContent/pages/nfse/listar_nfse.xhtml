@@ -130,7 +130,7 @@
 						rowKey="#{nfs.id}" 
 						rendered="#{consultarNFSEController.exibirResultado}"
 						binding="#{dataTableUtil.lazyDataTable}"
-						disabledSelection="#{nfs.status eq 'REMOVIDO' or nfs.status eq 'EXPORTADO'}">
+						disabledSelection="#{nfs.status eq 'REMOVIDO' or nfs.status eq 'EXPORTADO'}" >
 						
 						<p:column selectionMode="multiple"  />
 					    <p:column headerText="Situação" style="text-align:center;">
@@ -174,8 +174,9 @@
 						</p:column>
 						
 						<p:column headerText="Download" style="text-align: center;">
-							<p:commandLink ajax="true" process="@this" >
+							<p:commandLink ajax="false" process="@this" onclick="PrimeFaces.monitorDownload(start, stop);">
 								<h:outputText value="" title="Download" styleClass="fa fa-download" />
+								<p:fileDownload value="#{consultarNFSEController.download(nfs)}" />
 							</p:commandLink>
 						</p:column>
 						
@@ -197,6 +198,15 @@
 						</p:panelGrid>
 					</p:panel>
 				</h:form>
+				<script type="text/javascript">
+					function start() {
+					    PF('statusDialog').show();
+					}
+					 
+					function stop() {
+					    PF('statusDialog').hide();
+					}
+				</script>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -1,5 +1,7 @@
 package br.com.grupojcr.nfse.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,12 +10,13 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 import br.com.grupojcr.nfse.business.LoginBusiness;
 import br.com.grupojcr.nfse.business.MonitoramentoBusiness;
@@ -48,6 +51,8 @@ public class ConsultarNFSEController implements Serializable {
 	private List<NotaFiscalServico> notasSelecionadas;
 	
 	private FiltroConsultaNFSE filtro;
+	
+	private NotaFiscalServico notaFiscal;
 	
 	@EJB
 	private NFSEBusiness nfseBusiness;
@@ -113,8 +118,21 @@ public class ConsultarNFSEController implements Serializable {
 		try {
 			monitoramentoBusiness.lerXML();
 			Message.setMessage("consultarNFSE.atualizar");
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
 		} catch (Exception e) {
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "atualizar" }, e);
+		}
+	}
+
+	public StreamedContent download(NotaFiscalServico nfs) throws ApplicationException {
+		try {
+			InputStream arquivo = new ByteArrayInputStream(nfs.getXml().getBytes("UTF-8"));
+			String nomeArquivo = TreatDate.format("dd-MM-yyyy", nfs.getDtEmissao()) + "-" + nfs.getNumeroNota() + ".xml";
+			return new DefaultStreamedContent(arquivo, "text/xml", nomeArquivo);
+		} catch (Exception e) {
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "download" }, e);
 		}
 	}
 	
@@ -184,6 +202,14 @@ public class ConsultarNFSEController implements Serializable {
 
 	public void setNotasSelecionadas(List<NotaFiscalServico> notasSelecionadas) {
 		this.notasSelecionadas = notasSelecionadas;
+	}
+
+	public NotaFiscalServico getNotaFiscal() {
+		return notaFiscal;
+	}
+
+	public void setNotaFiscal(NotaFiscalServico notaFiscal) {
+		this.notaFiscal = notaFiscal;
 	}
 
 }

@@ -81,7 +81,14 @@
 		<param-value>true</param-value>
 	</context-param>
 	
-	
+	<error-page>
+		<error-code>403</error-code>
+		<location>/pages/templates/errors/error_security.jsf</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/pages/templates/errors/error_generic.jsf</location>
+	</error-page>
 	
 	
 	<!-- JSF URL mapping -->

@@ -3,7 +3,6 @@ package br.com.grupojcr.nfse.util.exception;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 
-
 /**
  * Classe utilizada para encapsular exceções da aplicação.
  * 

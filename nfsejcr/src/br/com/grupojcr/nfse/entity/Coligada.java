@@ -1,5 +1,7 @@
 package br.com.grupojcr.nfse.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +11,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "TB_COLIGADA")
-public class Coligada {
+public class Coligada implements BaseEntity, Serializable {
 	
+	private static final long serialVersionUID = -3441389530184828343L;
+
 	@Id
 	@Column(name = "ID", nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -36,15 +36,16 @@
 			<section class="content">
 			<div class="row" jsf:id="divMessage">
 				<div class="col-md-12 col-sm-12 col-xs-12">
-					<p:messages id="messages" closable="true" globalOnly="false" redisplay="true" showIcon="true" />
-					<!--  <p:growl autoUpdate="true" showDetail="false" id="g_mensagens" /> -->
+					<p:messages id="messages" for="mensagem" showDetail="true" closable="true" >
+						<p:autoUpdate />
+					</p:messages>
+<!-- 					 <p:growl autoUpdate="true" showDetail="false" id="g_mensagens" /> -->
 					<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
 						closable="false" resizable="false" showHeader="false">
 							<h:graphicImage name="/images/ajax_loader_red.gif" />
 					</p:dialog>
 					<p:ajaxStatus onstart="PF('statusDialog').show()"
-						onsuccess="PF('statusDialog').hide()" onerror="ajaxOnError()"
-						oncomplete="goTopOnError();" />
+						onsuccess="PF('statusDialog').hide()" />
 				</div>
 			</div>
 			<ui:insert name="body" /> </section>

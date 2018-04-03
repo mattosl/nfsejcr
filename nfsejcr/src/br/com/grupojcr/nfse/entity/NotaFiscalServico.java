@@ -1,5 +1,6 @@
 package br.com.grupojcr.nfse.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -21,8 +22,10 @@ import br.com.grupojcr.nfse.enumerator.Status;
 
 @Entity
 @Table(name = "TB_NFSE")
-public class NotaFiscalServico {
+public class NotaFiscalServico implements BaseEntity, Serializable {
 	
+	private static final long serialVersionUID = 6448445639342130939L;
+
 	@Id
 	@Column(name = "ID", nullable = false)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

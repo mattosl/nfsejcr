@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import br.com.grupojcr.nfse.dao.ColigadaDAO;
 import br.com.grupojcr.nfse.dao.NotaFiscalServicoDAO;
+import br.com.grupojcr.nfse.dto.FiltroConsultaNFSE;
 import br.com.grupojcr.nfse.entity.Coligada;
 import br.com.grupojcr.nfse.entity.NotaFiscalServico;
 import br.com.grupojcr.nfse.entity.Usuario;
@@ -137,6 +138,28 @@ public class NFSEBusiness {
 			throw e;
 		} catch (Exception e) {
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "listarColigadasAtivas" }, e);
+		}
+	}
+	
+	public Integer obterQtdNotasServico(FiltroConsultaNFSE filtro) throws ApplicationException {
+		try {
+			return daoNotaFiscalServico.listar().size();
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
+		} catch (Exception e) {
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "obterQtdNotasServico" }, e);
+		}
+	}
+	
+	public List<NotaFiscalServico> listarNotaServicoPaginada(int first, int pageSize, FiltroConsultaNFSE filtro) throws ApplicationException {
+		try {
+			return daoNotaFiscalServico.listar();
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
+		} catch (Exception e) {
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "listarNotaServicoPaginada" }, e);
 		}
 	}
 }

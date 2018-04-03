@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+	<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<ui:composition template="/pages/templates/layout.xhtml">	
+		<ui:define name="breadcrumb">
+			<li><i class="fa fa-table x-big"></i> Mensagem <br/></li>        
+    	</ui:define>		
+		<ui:define name="body">
+			<br/>
+			<div class="box box-warning">
+				<div class="box-header with-border">
+					<h3 class="box-title">Alerta</h3>
+				</div>
+				<div class="box-body row">
+					<div class="form-group col-md-12">
+						<p>#{appMessages['message.forbidden']}</p>						
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</ui:component>

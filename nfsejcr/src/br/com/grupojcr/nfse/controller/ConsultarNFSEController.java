@@ -7,7 +7,9 @@ import java.util.Calendar;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
@@ -16,11 +18,15 @@ import br.com.grupojcr.nfse.business.LoginBusiness;
 import br.com.grupojcr.nfse.business.NFSEBusiness;
 import br.com.grupojcr.nfse.dto.FiltroConsultaNFSE;
 import br.com.grupojcr.nfse.entity.Coligada;
+import br.com.grupojcr.nfse.entity.NotaFiscalServico;
+import br.com.grupojcr.nfse.entity.datamodel.NotaFiscalServicoDataModel;
 import br.com.grupojcr.nfse.enumerator.MunicipioIBGE;
 import br.com.grupojcr.nfse.util.exception.ApplicationException;
+import br.com.grupojcr.nfse.util.exception.ControllerExceptionHandler;
 
 @Named
 @ViewScoped
+@ControllerExceptionHandler
 public class ConsultarNFSEController implements Serializable {
 
 	protected static Logger LOG = Logger.getLogger(LoginBusiness.class);
@@ -35,11 +41,15 @@ public class ConsultarNFSEController implements Serializable {
 	
 	private List<Coligada> listaColigada;
 	private List<MunicipioIBGE> listaMunicipio;
+	private List<NotaFiscalServico> notasSelecionadas;
 	
 	private FiltroConsultaNFSE filtro;
 	
 	@EJB
 	private NFSEBusiness nfseBusiness;
+	
+	@Inject
+	private NotaFiscalServicoDataModel dataModel;
 	
 	public void iniciarProcesso() throws ApplicationException {
 		try {
@@ -59,10 +69,16 @@ public class ConsultarNFSEController implements Serializable {
 	
 	public void pesquisar() throws ApplicationException {
 		try {
+			if(nfseBusiness.obterQtdNotasServico(getFiltro()) == 0) {
+				setExibirResultado(Boolean.FALSE);
+				throw new ApplicationException("message.datatable.noRecords", FacesMessage.SEVERITY_WARN);
+			}
+			
+			dataModel.setFiltro(getFiltro());
 			setExibirResultado(Boolean.TRUE);
-//		} catch (ApplicationException e) {
-//			LOG.info(e.getMessage(), e);
-//			throw e;
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
 		} catch (Exception e) {
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "pesquisar" }, e);
 		}
@@ -132,6 +148,22 @@ public class ConsultarNFSEController implements Serializable {
 
 	public void setListaMunicipio(List<MunicipioIBGE> listaMunicipio) {
 		this.listaMunicipio = listaMunicipio;
+	}
+
+	public NotaFiscalServicoDataModel getDataModel() {
+		return dataModel;
+	}
+
+	public void setDataModel(NotaFiscalServicoDataModel dataModel) {
+		this.dataModel = dataModel;
+	}
+
+	public List<NotaFiscalServico> getNotasSelecionadas() {
+		return notasSelecionadas;
+	}
+
+	public void setNotasSelecionadas(List<NotaFiscalServico> notasSelecionadas) {
+		this.notasSelecionadas = notasSelecionadas;
 	}
 
 }

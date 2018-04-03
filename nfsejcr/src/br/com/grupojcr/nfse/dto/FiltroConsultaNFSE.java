@@ -9,7 +9,7 @@ public class FiltroConsultaNFSE {
 
 	private Coligada coligada;
 	private MunicipioIBGE municipio;
-	private String numeroNota;
+	private Long numeroNota;
 	private Date dtInicial;
 	private Date dtFinal;
 	private Integer situacao;
@@ -30,11 +30,11 @@ public class FiltroConsultaNFSE {
 		this.municipio = municipio;
 	}
 
-	public String getNumeroNota() {
+	public Long getNumeroNota() {
 		return numeroNota;
 	}
 
-	public void setNumeroNota(String numeroNota) {
+	public void setNumeroNota(Long numeroNota) {
 		this.numeroNota = numeroNota;
 	}
 

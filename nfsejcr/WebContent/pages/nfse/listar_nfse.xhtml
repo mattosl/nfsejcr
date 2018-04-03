@@ -73,17 +73,17 @@
 										<label for="numNota" class="col-sm-2 control-label">Número da Nota:</label>
 	
 										<div class="col-sm-10 col-md-2">
-									         <h:inputText value="#{consultarNFSEController.filtro.numeroNota}" styleClass="form-control" id="numNota" />
+									         <h:inputText value="#{consultarNFSEController.filtro.numeroNota}" styleClass="form-control" id="numNota" onkeyup="filterNumberOnly(this);" maxlength="8" />
 										</div>
 									</div>
 									<div class="form-group">
 										<label for="situacao" class="col-sm-2 control-label">Situação:</label>
 										<div class="radio col-sm-10">
 											<p:selectOneRadio id="situacao" value="#{consultarNFSEController.filtro.situacao}">
-											    <f:selectItem itemLabel="Pendente" itemValue="1"  />
-											    <f:selectItem itemLabel="Exportada" itemValue="2" />
-											    <f:selectItem itemLabel="Removida" itemValue="3" />
-											    <f:selectItem itemLabel="Todas" itemValue="4" />
+											    <f:selectItem itemLabel="Pendente" itemValue="0"  />
+											    <f:selectItem itemLabel="Exportada" itemValue="1" />
+											    <f:selectItem itemLabel="Removida" itemValue="2" />
+											    <f:selectItem itemLabel="Todas" itemValue="3" />
 											</p:selectOneRadio>
 										</div>
 									</div>
@@ -111,10 +111,10 @@
 											styleClass="btn btn-default"
 											icon="fa fa-refresh"
 											value="Atualizar"
-											action="#{consultarNFSEController.iniciarIncluir()}"
-											immediate="true"
+											action="#{consultarNFSEController.atualizar()}"
 											id="btn_atualizar"
-											ajax="false" />
+											immediate="true"
+											ajax="true" />
 									</p:panelGrid>
 								</div>
 							</div>
@@ -129,35 +129,42 @@
 						selection="#{consultarNFSEController.notasSelecionadas}" 
 						rowKey="#{nfs.id}" 
 						rendered="#{consultarNFSEController.exibirResultado}"
-						binding="#{dataTableUtil.lazyDataTable}">
+						binding="#{dataTableUtil.lazyDataTable}"
+						disabledSelection="#{nfs.status eq 'REMOVIDO' or nfs.status eq 'EXPORTADO'}">
 						
-						<p:column selectionMode="multiple" />
+						<p:column selectionMode="multiple"  />
 					    <p:column headerText="Situação" style="text-align:center;">
-					    	<span class="label label-warning">Pendente</span>
+					    	<span class="label label-#{nfs.status eq 'PENDENTE' ? 'warning' : nfs.status eq 'EXPORTADO' ? 'success' : 'danger' }">#{nfs.status.descricao}</span>
 					    </p:column>
 					 
 					    <p:column headerText="Data de Emissão" style="text-align:center;" >
-					        <h:outputText value="31/03/2018" />
+					        <h:outputText value="#{nfs.dtEmissao}" >
+					        	<f:convertDateTime pattern="dd/MM/yyyy"/>
+					        </h:outputText>
 					    </p:column>
 					 
 					    <p:column headerText="Nº" style="text-align:center;">
-					        <h:outputText value="95" />
+					        <h:outputText value="#{nfs.numeroNota}" />
 					    </p:column>
 					 
 					    <p:column headerText="Valor (R$)" style="text-align:center;">
-					        <h:outputText value="8.000,00" />
+					        <h:outputText value="#{nfs.valor}">
+					        	<f:convertNumber minFractionDigits="2" currencyCode="R$"/>
+					        </h:outputText>
 					    </p:column>
 					    
 					    <p:column headerText="Município" style="text-align:center;">
-					        <h:outputText value="CURITIBA" />
+					        <h:outputText value="#{nfs.municipio.toUpperCase()}" />
 					    </p:column>
 					    
 					    <p:column headerText="Prestador" style="text-align:center;">
-					        <h:outputText value="EWAVE" />
+					        <h:outputText id="prestador" value="#{nfs.prestador}" />
+					        <p:tooltip value="CNPJ: #{nfs.cnpjPrestadorFormatado}" for="prestador" />
 					    </p:column>
 					    
 					    <p:column headerText="Tomador" style="text-align:center;">
-					        <h:outputText value="JCR ADMINISTRAÇÃO E PARTICIPAÇÕES" />
+					        <h:outputText id="tomador" value="#{nfs.tomador}" />
+					        <p:tooltip value="CNPJ: #{nfs.cnpjTomadorFormatado}" for="tomador" />
 					    </p:column>
 					    
 					    <p:column headerText="Detalhes" style="text-align: center;">
@@ -173,7 +180,7 @@
 						</p:column>
 						
 						<p:column headerText="Excluir" style="text-align: center;">
-							<p:commandLink ajax="true" process="@this" >
+							<p:commandLink ajax="true" process="@this" rendered="#{nfs.status ne 'REMOVIDO'}">
 								<h:outputText value="" title="Excluir" styleClass="fa fa-times" />
 							</p:commandLink>
 						</p:column>

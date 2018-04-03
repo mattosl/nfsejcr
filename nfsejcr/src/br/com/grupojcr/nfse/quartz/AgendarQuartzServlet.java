@@ -43,7 +43,7 @@ public class AgendarQuartzServlet extends HttpServlet {
 			JobDetail jobDetail = JobBuilder.newJob(MonitoramentoXML.class).withIdentity(jobKey).build();
 
 			//cria o horario de agendamento
-			String cronExpression = "0 0 * ? * *";
+			String cronExpression = "0 0 1/1 ? * *";
 			String triggerName = "Trigger_" + jobName;
 			Trigger trigger = TriggerBuilder.newTrigger().withIdentity(triggerName, group).withSchedule(CronScheduleBuilder.cronSchedule(cronExpression)).build();
 

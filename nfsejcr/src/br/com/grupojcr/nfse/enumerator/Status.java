@@ -20,5 +20,16 @@ public enum Status {
 	public String getDescricao() {
 		return descricao;
 	}
+	
+	public static Status obterPorCodigo(Integer codigo) {
+		if(codigo != null) {
+			for(Status status : Status.values()) {
+				if(status.getId().equals(codigo)) {
+					return status;
+				}
+			}
+		}
+		return null;
+	}
 
 }

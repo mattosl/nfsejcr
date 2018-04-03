@@ -143,7 +143,7 @@ public class NFSEBusiness {
 	
 	public Integer obterQtdNotasServico(FiltroConsultaNFSE filtro) throws ApplicationException {
 		try {
-			return daoNotaFiscalServico.listar().size();
+			return daoNotaFiscalServico.obterQtdNota(filtro);
 		} catch (ApplicationException e) {
 			LOG.info(e.getMessage(), e);
 			throw e;
@@ -154,7 +154,7 @@ public class NFSEBusiness {
 	
 	public List<NotaFiscalServico> listarNotaServicoPaginada(int first, int pageSize, FiltroConsultaNFSE filtro) throws ApplicationException {
 		try {
-			return daoNotaFiscalServico.listar();
+			return daoNotaFiscalServico.listarNotaServicoPaginada(first, pageSize, filtro);
 		} catch (ApplicationException e) {
 			LOG.info(e.getMessage(), e);
 			throw e;

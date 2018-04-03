@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,14 +16,17 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import br.com.grupojcr.nfse.business.LoginBusiness;
+import br.com.grupojcr.nfse.business.MonitoramentoBusiness;
 import br.com.grupojcr.nfse.business.NFSEBusiness;
 import br.com.grupojcr.nfse.dto.FiltroConsultaNFSE;
 import br.com.grupojcr.nfse.entity.Coligada;
 import br.com.grupojcr.nfse.entity.NotaFiscalServico;
 import br.com.grupojcr.nfse.entity.datamodel.NotaFiscalServicoDataModel;
 import br.com.grupojcr.nfse.enumerator.MunicipioIBGE;
+import br.com.grupojcr.nfse.util.TreatDate;
 import br.com.grupojcr.nfse.util.exception.ApplicationException;
 import br.com.grupojcr.nfse.util.exception.ControllerExceptionHandler;
+import br.com.grupojcr.nfse.util.exception.Message;
 
 @Named
 @ViewScoped
@@ -47,6 +51,9 @@ public class ConsultarNFSEController implements Serializable {
 	
 	@EJB
 	private NFSEBusiness nfseBusiness;
+
+	@EJB
+	private MonitoramentoBusiness monitoramentoBusiness;
 	
 	@Inject
 	private NotaFiscalServicoDataModel dataModel;
@@ -58,7 +65,7 @@ public class ConsultarNFSEController implements Serializable {
 			setListaColigada(nfseBusiness.listarColigadasAtivas());
 			setListaMunicipio(new ArrayList<MunicipioIBGE>(Arrays.asList(MunicipioIBGE.values())));
 			carregarDatas();
-			getFiltro().setSituacao(1);
+			getFiltro().setSituacao(0);
 		} catch (ApplicationException e) {
 			LOG.info(e.getMessage(), e);
 			throw e;
@@ -69,6 +76,10 @@ public class ConsultarNFSEController implements Serializable {
 	
 	public void pesquisar() throws ApplicationException {
 		try {
+			
+			if(getFiltro().getDtInicial().after(getFiltro().getDtFinal())) {
+				throw new ApplicationException("consultarNFSE.periodo.invalido", new String[] {TreatDate.format("dd/MM/yyyy", getFiltro().getDtInicial()) , TreatDate.format("dd/MM/yyyy", getFiltro().getDtFinal())}, FacesMessage.SEVERITY_ERROR);
+			}
 			if(nfseBusiness.obterQtdNotasServico(getFiltro()) == 0) {
 				setExibirResultado(Boolean.FALSE);
 				throw new ApplicationException("message.datatable.noRecords", FacesMessage.SEVERITY_WARN);
@@ -95,6 +106,15 @@ public class ConsultarNFSEController implements Serializable {
 			getFiltro().setDtFinal(calendarioFinal.getTime());
 		} catch (Exception e) {
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "carregarDatas" }, e);
+		}
+	}
+	
+	public void atualizar() throws ApplicationException {
+		try {
+			monitoramentoBusiness.lerXML();
+			Message.setMessage("consultarNFSE.atualizar");
+		} catch (Exception e) {
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "atualizar" }, e);
 		}
 	}
 	

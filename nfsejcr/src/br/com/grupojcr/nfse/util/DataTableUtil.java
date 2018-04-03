@@ -16,7 +16,7 @@ import br.com.grupojcr.nfse.util.exception.Message;
 public class DataTableUtil implements Serializable {
 	
 	private static final long serialVersionUID = 2599154038390984756L;
-	public final static int QTDE_REGISTROS_PAGINA = 20;
+	public final static int QTDE_REGISTROS_PAGINA = 10;
 	public final static int QTDE_REGISTROS_PAGINA_MODAL = 5;
 
 	private DataTable dataTable;

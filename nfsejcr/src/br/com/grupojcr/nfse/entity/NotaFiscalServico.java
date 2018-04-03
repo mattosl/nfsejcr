@@ -16,9 +16,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import br.com.grupojcr.nfse.enumerator.EstiloXML;
 import br.com.grupojcr.nfse.enumerator.Status;
+import br.com.grupojcr.nfse.util.Util;
 
 @Entity
 @Table(name = "TB_NFSE")
@@ -232,6 +234,16 @@ public class NotaFiscalServico implements BaseEntity, Serializable {
 
 	public void setEstiloXML(EstiloXML estiloXML) {
 		this.estiloXML = estiloXML;
+	}
+	
+	@Transient
+	public String getCnpjPrestadorFormatado() {
+		return Util.formatarCNPJ(cnpjPrestador);
+	}
+
+	@Transient
+	public String getCnpjTomadorFormatado() {
+		return Util.formatarCNPJ(cnpjTomador);
 	}
 
 	@Override

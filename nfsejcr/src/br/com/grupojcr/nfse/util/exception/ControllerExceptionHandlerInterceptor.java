@@ -44,6 +44,6 @@ public class ControllerExceptionHandlerInterceptor implements Serializable {
 	private void addMessage(FacesMessage.Severity severity, String summary, String detail) {
         FacesContext context = FacesContext.getCurrentInstance();
         FacesMessage msg = new FacesMessage(severity, summary, detail);
-        context.addMessage("mensagem", msg);
+        context.addMessage(null, msg);
     }
 }

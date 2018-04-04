@@ -5,6 +5,10 @@
 
 .ui-widget,   
     .ui-widget .ui-widget {   
-    font-family: 'Roboto',sans-serif !important;  
+    font-family: 'Roboto',sans-serif !important; 
+}
+
+.font-normal {
+	font-weight: normal !important;
 }
 

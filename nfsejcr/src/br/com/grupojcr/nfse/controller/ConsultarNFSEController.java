@@ -3,6 +3,7 @@ package br.com.grupojcr.nfse.controller;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -13,6 +14,9 @@ import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
 import org.primefaces.model.DefaultStreamedContent;
@@ -25,8 +29,13 @@ import br.com.grupojcr.nfse.dto.FiltroConsultaNFSE;
 import br.com.grupojcr.nfse.entity.Coligada;
 import br.com.grupojcr.nfse.entity.NotaFiscalServico;
 import br.com.grupojcr.nfse.entity.datamodel.NotaFiscalServicoDataModel;
+import br.com.grupojcr.nfse.entity.xml.ListaNfseXML;
+import br.com.grupojcr.nfse.entity.xml.NfseXML;
+import br.com.grupojcr.nfse.entity.xml.tcCompNfseXML;
+import br.com.grupojcr.nfse.enumerator.EstiloXML;
 import br.com.grupojcr.nfse.enumerator.MunicipioIBGE;
 import br.com.grupojcr.nfse.util.TreatDate;
+import br.com.grupojcr.nfse.util.Util;
 import br.com.grupojcr.nfse.util.exception.ApplicationException;
 import br.com.grupojcr.nfse.util.exception.ControllerExceptionHandler;
 import br.com.grupojcr.nfse.util.exception.Message;
@@ -53,6 +62,7 @@ public class ConsultarNFSEController implements Serializable {
 	private FiltroConsultaNFSE filtro;
 	
 	private NotaFiscalServico notaFiscal;
+	private NfseXML notaFiscalXML;
 	
 	@EJB
 	private NFSEBusiness nfseBusiness;
@@ -123,6 +133,44 @@ public class ConsultarNFSEController implements Serializable {
 			throw e;
 		} catch (Exception e) {
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "atualizar" }, e);
+		}
+	}
+	
+	public void detalhar() throws ApplicationException {
+		try {
+			if(Util.isNotNull(getNotaFiscal())) {
+				if(getNotaFiscal().getEstiloXML().equals(EstiloXML.CURITIBA_UNICA)) {
+					try {
+						JAXBContext context = JAXBContext.newInstance(NfseXML.class);
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						NfseXML nfse = (NfseXML) unmarshaller.unmarshal(new StringReader(getNotaFiscal().getXml()));
+						
+						setNotaFiscalXML(nfse);
+					} catch (JAXBException e) {
+						throw new ApplicationException("message.empty", new String[] {"XML com erro."}, FacesMessage.SEVERITY_ERROR);
+					}
+				} else if(getNotaFiscal().getEstiloXML().equals(EstiloXML.CURITIBA_VARIAS)) {
+					try {
+						JAXBContext context = JAXBContext.newInstance(ListaNfseXML.class);
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						ListaNfseXML lista = (ListaNfseXML) unmarshaller.unmarshal(new StringReader(getNotaFiscal().getXml()));
+						
+						for(tcCompNfseXML xml : lista.getListaNfse()) {
+							if(xml.getNfse().getInformacaoNota().getNumero().equals(getNotaFiscal().getNumeroNota())) {
+								setNotaFiscalXML(xml.getNfse());
+								break;
+							}
+						}
+					} catch (JAXBException e) {
+						throw new ApplicationException("message.empty", new String[] {"XML com erro."}, FacesMessage.SEVERITY_ERROR);
+					}
+				}
+			}
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
+		} catch (Exception e) {
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "detalhar" }, e);
 		}
 	}
 
@@ -210,6 +258,14 @@ public class ConsultarNFSEController implements Serializable {
 
 	public void setNotaFiscal(NotaFiscalServico notaFiscal) {
 		this.notaFiscal = notaFiscal;
+	}
+
+	public NfseXML getNotaFiscalXML() {
+		return notaFiscalXML;
+	}
+
+	public void setNotaFiscalXML(NfseXML notaFiscalXML) {
+		this.notaFiscalXML = notaFiscalXML;
 	}
 
 }

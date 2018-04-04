@@ -12,3 +12,8 @@
 	font-weight: normal !important;
 }
 
+.alinhada  {
+	margin: 0 auto;
+	width: 50%; /* Valor da Largura */
+}
+

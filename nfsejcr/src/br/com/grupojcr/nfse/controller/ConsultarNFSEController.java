@@ -26,6 +26,7 @@ import br.com.grupojcr.nfse.business.LoginBusiness;
 import br.com.grupojcr.nfse.business.MonitoramentoBusiness;
 import br.com.grupojcr.nfse.business.NFSEBusiness;
 import br.com.grupojcr.nfse.dto.FiltroConsultaNFSE;
+import br.com.grupojcr.nfse.dto.NotaFiscalServicoDTO;
 import br.com.grupojcr.nfse.entity.Coligada;
 import br.com.grupojcr.nfse.entity.NotaFiscalServico;
 import br.com.grupojcr.nfse.entity.datamodel.NotaFiscalServicoDataModel;
@@ -35,6 +36,7 @@ import br.com.grupojcr.nfse.entity.xml.tcCompNfseXML;
 import br.com.grupojcr.nfse.enumerator.EstiloXML;
 import br.com.grupojcr.nfse.enumerator.MunicipioIBGE;
 import br.com.grupojcr.nfse.util.TreatDate;
+import br.com.grupojcr.nfse.util.TreatNumber;
 import br.com.grupojcr.nfse.util.Util;
 import br.com.grupojcr.nfse.util.exception.ApplicationException;
 import br.com.grupojcr.nfse.util.exception.ControllerExceptionHandler;
@@ -62,7 +64,7 @@ public class ConsultarNFSEController implements Serializable {
 	private FiltroConsultaNFSE filtro;
 	
 	private NotaFiscalServico notaFiscal;
-	private NfseXML notaFiscalXML;
+	private NotaFiscalServicoDTO notaFiscalDTO;
 	
 	@EJB
 	private NFSEBusiness nfseBusiness;
@@ -145,7 +147,9 @@ public class ConsultarNFSEController implements Serializable {
 						Unmarshaller unmarshaller = context.createUnmarshaller();
 						NfseXML nfse = (NfseXML) unmarshaller.unmarshal(new StringReader(getNotaFiscal().getXml()));
 						
-						setNotaFiscalXML(nfse);
+						NotaFiscalServicoDTO dto = montarNota(nfse);
+						dto.setMunicipio(getNotaFiscal().getMunicipio());
+						setNotaFiscalDTO(dto);
 					} catch (JAXBException e) {
 						throw new ApplicationException("message.empty", new String[] {"XML com erro."}, FacesMessage.SEVERITY_ERROR);
 					}
@@ -157,7 +161,9 @@ public class ConsultarNFSEController implements Serializable {
 						
 						for(tcCompNfseXML xml : lista.getListaNfse()) {
 							if(xml.getNfse().getInformacaoNota().getNumero().equals(getNotaFiscal().getNumeroNota())) {
-								setNotaFiscalXML(xml.getNfse());
+								NotaFiscalServicoDTO dto = montarNota(xml.getNfse());
+								dto.setMunicipio(getNotaFiscal().getMunicipio());
+								setNotaFiscalDTO(dto);
 								break;
 							}
 						}
@@ -181,6 +187,34 @@ public class ConsultarNFSEController implements Serializable {
 			return new DefaultStreamedContent(arquivo, "text/xml", nomeArquivo);
 		} catch (Exception e) {
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "download" }, e);
+		}
+	}
+	
+	private NotaFiscalServicoDTO montarNota(NfseXML xml) throws ApplicationException {
+		try {
+			NotaFiscalServicoDTO dto = new NotaFiscalServicoDTO();
+			dto.setNumeroNota(xml.getInformacaoNota().getNumero().toString());
+			dto.setDtEmissao(TreatDate.format("dd/MM/yyyy", xml.getInformacaoNota().getDataEmissao()));
+			dto.setCodigoVerificacao(xml.getInformacaoNota().getCodigoVerificacao());
+			dto.setRazaoSocialPrestador(xml.getInformacaoNota().getPrestadorServico().getNomeFantasia());
+			dto.setCnpjPrestador(Util.formatarCNPJ(xml.getInformacaoNota().getPrestadorServico().getIdentificacao().getCnpj()));
+			dto.setInscricaoMunicipalPrestador(xml.getInformacaoNota().getPrestadorServico().getIdentificacao().getInscricaoMunicipal());
+			dto.setEnderecoPrestador(xml.getInformacaoNota().getPrestadorServico().getEndereco().getEndereco() + ", " + xml.getInformacaoNota().getPrestadorServico().getEndereco().getNumero() + " - " + xml.getInformacaoNota().getPrestadorServico().getEndereco().getBairro() + " - " + xml.getInformacaoNota().getPrestadorServico().getEndereco().getCep());
+			dto.setRazaoSocialTomador(xml.getInformacaoNota().getTomadorServico().getRazaoSocial());
+			dto.setCnpjTomador(Util.formatarCNPJ(xml.getInformacaoNota().getTomadorServico().getIdentificacao().getCpfCnpj().getCnpj()));
+			dto.setInscricaoMunicipalTomador(xml.getInformacaoNota().getTomadorServico().getIdentificacao().getInscricaoMunicipal());
+			dto.setEnderecoTomador(xml.getInformacaoNota().getTomadorServico().getEndereco().getEndereco() + ", " + xml.getInformacaoNota().getTomadorServico().getEndereco().getNumero() + " - " + xml.getInformacaoNota().getTomadorServico().getEndereco().getBairro() + " - " + xml.getInformacaoNota().getTomadorServico().getEndereco().getCep());
+			dto.setDiscriminacao(xml.getInformacaoNota().getServico().getDiscriminacao());
+			dto.setValorDeducoes(TreatNumber.formatMoney(xml.getInformacaoNota().getServico().getValores().getDeducoes()));
+			dto.setBaseCalculo(TreatNumber.formatMoney(xml.getInformacaoNota().getServico().getValores().getBaseCalculo()));
+			dto.setAliquota(TreatNumber.formatMoney(xml.getInformacaoNota().getServico().getValores().getAliquota()));
+			dto.setValorISS(TreatNumber.formatMoney(xml.getInformacaoNota().getServico().getValores().getIss()));
+			dto.setCredAbatimentoIPTU(TreatNumber.formatMoney(xml.getInformacaoNota().getServico().getValores().getOutrasRetencoes()));
+			dto.setValorTotal(TreatNumber.formatMoneyCurrency(xml.getInformacaoNota().getServico().getValores().getLiquidoNfse()));
+			
+			return dto;
+		} catch (Exception e) {
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "montarNota" }, e);
 		}
 	}
 	
@@ -260,12 +294,12 @@ public class ConsultarNFSEController implements Serializable {
 		this.notaFiscal = notaFiscal;
 	}
 
-	public NfseXML getNotaFiscalXML() {
-		return notaFiscalXML;
+	public NotaFiscalServicoDTO getNotaFiscalDTO() {
+		return notaFiscalDTO;
 	}
 
-	public void setNotaFiscalXML(NfseXML notaFiscalXML) {
-		this.notaFiscalXML = notaFiscalXML;
+	public void setNotaFiscalDTO(NotaFiscalServicoDTO notaFiscalDTO) {
+		this.notaFiscalDTO = notaFiscalDTO;
 	}
 
 }

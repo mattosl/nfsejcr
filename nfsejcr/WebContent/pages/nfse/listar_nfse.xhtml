@@ -207,113 +207,109 @@
 					<p:dialog styleClass="modal-dialog modal-content" style="width: auto !important;"
 						id="modalNota"
 						widgetVar="modalNota" 
-						header="NFS-e Curitiba - Nº 1234" 
+						header="NFS-e #{consultarNFSEController.notaFiscalDTO.municipio} - Nº #{consultarNFSEController.notaFiscalDTO.numeroNota}" 
 						resizable="false" 
 						responsive="true"
 						height="500"
 						width="80%"
 						draggable="false"
 						modal="true">
-						<div class="box-body">
-							<div class="form-group">
-								<label for="dtEmissaoModal" class="col-sm-2">Data da Emissão:</label>
-						        <h:outputLabel id="dtEmissaoModal" value="#{consultarNFSEController.notaFiscalXML.informacaoNota.dataEmissao}" styleClass="col-sm-5 font-normal">
-						        	<f:convertDateTime pattern="dd/MM/yyyy"/>
-						        </h:outputLabel>
-						        <label for="codigoVerificacaoModal" class="col-sm-3">Código de Verificação:</label>
-						        <h:outputLabel id="codigoVerificacaoModal" value="#{consultarNFSEController.notaFiscalXML.informacaoNota.codigoVerificacao}" styleClass="col-sm-2 font-normal" />
+						<div class="form-horizontal">
+							<div class="box-body">
+								<div class="form-group">
+									<label for="dtEmissaoModal" class="col-sm-2">Data da Emissão:</label>
+							        <h:outputLabel id="dtEmissaoModal" value="#{consultarNFSEController.notaFiscalDTO.dtEmissao}" styleClass="col-sm-5 font-normal" />
+							        <label class="col-sm-3">Código de Verificação:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.codigoVerificacao}" styleClass="col-sm-2 font-normal" />
+								</div>
 							</div>
-						</div>
-						<div class="box-header with-border">
-		          					<h3 class="box-title with-border">Prestador de Serviços</h3>
-		         				</div>
-						<div class="box-body">
-							<div class="form-group">
-								<label class="col-sm-2">Razão Social:</label>
-						        <label class="col-sm-10 font-normal">JCR ADMINISTRACAO</label>
+							<div class="box-header with-border">
+			          					<h3 class="box-title with-border">Prestador de Serviços</h3>
+			         				</div>
+							<div class="box-body">
+								<div class="form-group">
+									<label class="col-sm-2">Razão Social:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.razaoSocialPrestador}" styleClass="col-sm-10 font-normal" />
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2">CPF/CNPJ:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.cnpjPrestador}" styleClass="col-sm-5 font-normal" />
+							        <label class="col-sm-2">Inscrição Municipal:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.inscricaoMunicipalPrestador}" styleClass="col-sm-3 font-normal" />
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2">Endereço:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.enderecoPrestador}" styleClass="col-sm-10 font-normal" />
+								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-sm-2">CPF/CNPJ:</label>
-						        <label class="col-sm-5 font-normal">99.999.999/9999-99</label>
-						        <label class="col-sm-3">Inscrição Municipal:</label>
-						        <label class="col-sm-2 font-normal">12345678</label>
+							<div class="box-header with-border">
+			          					<h3 class="box-title with-border">Tomador de Serviços</h3>
+			         				</div>
+			         				<div class="box-body">
+								<div class="form-group">
+									<label class="col-sm-2">Razão Social:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.razaoSocialTomador}" styleClass="col-sm-10 font-normal" />
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2">CPF/CNPJ:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.cnpjTomador}" styleClass="col-sm-5 font-normal" />
+							        <label class="col-sm-2">Inscrição Municipal:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.inscricaoMunicipalTomador}" styleClass="col-sm-3 font-normal" />
+								</div>
+								<div class="form-group">
+									<label class="col-sm-2">Endereço:</label>
+							        <h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.enderecoTomador}" styleClass="col-sm-10 font-normal" />
+								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-sm-2">Endereço:</label>
-						        <label class="col-sm-5 font-normal">ANITA GARIBALDI 1235</label>
-						        <label class="col-sm-3">Tel:</label>
-						        <label class="col-sm-2 font-normal">33431403</label>
+							<div class="box-header with-border">
+			          					<h3 class="box-title with-border">Discriminação dos Serviços</h3>
+			         				</div>
+			         				<div class="box-body">
+								<div class="form-group">
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.discriminacao}" styleClass="col-sm-12 font-normal" />
+								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-sm-2">Município:</label>
-						        <label class="col-sm-2 font-normal">Curitiba</label>
-						        <label class="col-sm-1">UF:</label>
-						        <label class="col-sm-2 font-normal">PR</label>
-						        <label class="col-sm-1">Email:</label>
-						        <label class="col-sm-4 font-normal">contabilidade@gmail.com</label>
+							<div class="box-header with-border">
+								<h3 class="box-title with-border">Valores</h3>
 							</div>
-						</div>
-						<div class="box-header with-border">
-		          					<h3 class="box-title with-border">Tomador de Serviços</h3>
-		         				</div>
-		         				<div class="box-body">
-							<div class="form-group">
-								<label class="col-sm-2">Razão Social:</label>
-						        <label class="col-sm-10 font-normal">JCR ADMINISTRACAO</label>
+							<div class="box-body">
+								<div class="form-group">
+									<label class="col-sm-4">Valor Total das Deduções (R$):</label> 
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.valorDeducoes}" styleClass="col-sm-3 font-normal" />
+									<label class="col-sm-2">PIS (R$):</label> 
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.valorDeducoes}" styleClass="col-sm-3 font-normal" />
+								</div>
+								<div class="form-group">
+									<label class="col-sm-4">Base de Cálculo (R$):</label>
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.baseCalculo}" styleClass="col-sm-3 font-normal" />
+									<label class="col-sm-2">COFINS (R$):</label>
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.baseCalculo}" styleClass="col-sm-3 font-normal" />
+								</div>
+								<div class="form-group">
+									<label class="col-sm-4">Alíquota (R$):</label>
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.aliquota}" styleClass="col-sm-3 font-normal" />
+									<label class="col-sm-2">INSS (R$):</label>
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.aliquota}" styleClass="col-sm-3 font-normal" />  
+								</div>
+								<div class="form-group">
+									<label class="col-sm-4">Valor do ISS (R$):</label>
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.valorISS}" styleClass="col-sm-3 font-normal" />
+									<label class="col-sm-2">IR (R$):</label>
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.credAbatimentoIPTU}" styleClass="col-sm-3 font-normal" /> 
+								</div>
+								<div class="form-group">
+									<label class="col-sm-4">Crédito p/ Abatimento do IPTU (R$):</label>
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.credAbatimentoIPTU}" styleClass="col-sm-3 font-normal" />
+									<label class="col-sm-2">CSLL (R$):</label>
+									<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.credAbatimentoIPTU}" styleClass="col-sm-3 font-normal" />  
+								</div>
 							</div>
-							<div class="form-group">
-								<label class="col-sm-2">CPF/CNPJ:</label>
-						        <label class="col-sm-5 font-normal">99.999.999/9999-99</label>
-						        <label class="col-sm-3">Inscrição Municipal:</label>
-						        <label class="col-sm-2 font-normal">12345678</label>
+							<hr />
+							<div class="form-group" style="font-size:16px;">
+								<label class="col-sm-4">VALOR TOTAL DA NOTA:</label>
+								<h:outputLabel value="#{consultarNFSEController.notaFiscalDTO.valorTotal}" styleClass="col-sm-8" />
 							</div>
-							<div class="form-group">
-								<label class="col-sm-2">Endereço:</label>
-						        <label class="col-sm-5 font-normal">ANITA GARIBALDI 1235</label>
-						        <label class="col-sm-3">Tel:</label>
-						        <label class="col-sm-2 font-normal">33431403</label>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-2">Município:</label>
-						        <label class="col-sm-2 font-normal">Curitiba</label>
-						        <label class="col-sm-1">UF:</label>
-						        <label class="col-sm-2 font-normal">PR</label>
-						        <label class="col-sm-1">Email:</label>
-						        <label class="col-sm-4 font-normal">contabilidade@gmail.com</label>
-							</div>
-						</div>
-						<div class="box-header with-border">
-		          					<h3 class="box-title with-border">Descriminação dos Serviços</h3>
-		         				</div>
-		         				<div class="box-body">
-							<div class="form-group">
-								<label class="col-sm-12 font-normal">Teste</label>
-							</div>
-						</div>
-						<div class="box-header with-border">
-							<h3 class="box-title with-border">Valores</h3>
-						</div>
-						<div class="box-body">
-							<div class="form-group">
-								<label class="col-sm-4">Valor Total das Deduções (R$):</label> <label
-									class="col-sm-8 font-normal">99,99</label>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-4">Base de Cálculo (R$):</label> <label
-									class="col-sm-8 font-normal">99,99</label>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-4">Alíquota (R$):</label> <label
-									class="col-sm-8 font-normal">99,99</label>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-4">Valor do ISS (R$):</label> <label
-									class="col-sm-8 font-normal">99,99</label>
-							</div>
-							<div class="form-group">
-								<label class="col-sm-4">Crédito p/ Abatimento do IPTU (R$):</label> 
-								<label class="col-sm-8 font-normal">99,99</label>
-							</div>
+							
 						</div>
 					</p:dialog> 
 				</h:form>

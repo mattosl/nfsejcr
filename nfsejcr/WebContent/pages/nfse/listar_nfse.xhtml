@@ -199,7 +199,9 @@
 									icon="fa fa-mail-reply"
 									value="Exportar para RM"
 									id="btn_exportar_rm"
-									process="@form"
+									process="@this"
+									action="#{consultarNFSEController.exportarRM()}"
+									update="@form"
 									ajax="true" />
 							</div>
 						</div>

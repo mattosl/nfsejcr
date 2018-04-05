@@ -111,6 +111,7 @@ public class ConsultarNFSEController implements Serializable {
 		try {
 			
 			if(getFiltro().getDtInicial().after(getFiltro().getDtFinal())) {
+				setExibirResultado(Boolean.FALSE);
 				throw new ApplicationException("consultarNFSE.periodo.invalido", new String[] {TreatDate.format("dd/MM/yyyy", getFiltro().getDtInicial()) , TreatDate.format("dd/MM/yyyy", getFiltro().getDtFinal())}, FacesMessage.SEVERITY_ERROR);
 			}
 			if(nfseBusiness.obterQtdNotasServico(getFiltro()) == 0) {
@@ -341,6 +342,27 @@ public class ConsultarNFSEController implements Serializable {
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "salvarAnexos" }, e);
 		}
 		return voltar();
+	}
+	
+	/**
+	 * Método responsavel por exportar as NFSE para o RM
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 09/04/2018
+	 * @return String
+	 * @throws ApplicationException
+	 */
+	public void exportarRM() throws ApplicationException {
+		try {
+			
+			Message.setMessage("consultarNFSE.exportar.sucesso");
+			
+//		} catch (ApplicationException e) {
+//			LOG.info(e.getMessage(), e);
+//			throw e;
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "exportarRM" }, e);
+		}
 	}
 	
 	/**

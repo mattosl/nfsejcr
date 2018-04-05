@@ -1,7 +1,5 @@
 package br.com.grupojcr.nfse.dto;
 
-import org.primefaces.model.UploadedFile;
-
 public class AnexoDTO {
 	
 	private String conteudo;

@@ -12,14 +12,17 @@
 		<ui:param name="activeSubmenu" value=""/>
     	<ui:param name="activeMenu" value="nfse"/>
 			
+		<f:metadata>
+			<f:viewAction action="#{consultarNFSEController.iniciarAtributos()}" />
+		</f:metadata>
     	<ui:define name="pageTitle"><i class="fa fa-home fa-1x cor-padrao"></i> NFS-e</ui:define>
     	<ui:define name="pageDescription">Incluir</ui:define>
 		<ui:define name="body">
 			<div class="page-content-central ui-fluid">
-				<div class="callout callout-warning">
-					<p><span class="bg-yellow"><i class="fa fa-info-circle"></i></span> Arraste ou selecione arquivos XML das notas fiscais de serviço. <b>Somente arquivos XML são aceitos.</b></p>
-				</div>
 				<h:form id="nfseForm" acceptcharset="ISO-8859-1" lang="pt_BR">
+					<div class="callout callout-warning">
+						<p><span class="bg-yellow"><i class="fa fa-info-circle"></i></span> Arraste ou selecione arquivos XML das notas fiscais de serviço. <b>Somente arquivos XML são aceitos.</b></p>
+					</div>
 					<p:panel toggleable="false" id="painelConsulta" styleClass="box box-danger">
 						<div class="box-header with-border">
 	             			<h3 class="box-title">Incluir NFS-e</h3>
@@ -28,26 +31,63 @@
                        		<div class="box-body">
 								<div class="form-group">
 							    	<p:fileUpload 
-							    		label="Selecionar" 
+							    		label="Adicionar" 
 							    		cancelLabel="Cancelar" 
 							    		uploadLabel="Upload" 
-							    		fileUploadListener="#{fileUploadView.handleFileUpload}" mode="advanced" dragDropSupport="true"
-			                       		update="messages" sizeLimit="100000" allowTypes="/(\.|\/)(xml|XML)$/" invalidFileMessage="Somente arquivos XML são aceitos" invalidSizeMessage="Tamanho do arquivo não permitido." />
+							    		fileUploadListener="#{consultarNFSEController.doUploadXML}" 
+							    		auto="true"
+							    		update="@form:anexos, @form:botoes"
+							    		dragDropSupport="true"
+			                       		allowTypes="/(\.|\/)(xml|XML)$/" 
+			                       		invalidFileMessage="Somente arquivos XML são aceitos" 
+			                       		invalidSizeMessage="Tamanho do arquivo não permitido."
+			                       		 />
 								</div>
+								<p:outputPanel id="anexos">
+									<p:dataTable var="anexo" 
+										value="#{consultarNFSEController.listaAnexo}" 
+										tableStyle="table-layout: auto; word-break: keep-all;"
+										rendered="#{consultarNFSEController.listaAnexo.size() > 0}" >
+										
+									 
+									    <p:column headerText="Nome do Arquivo" style="font-size:12px;" >
+									        <h:outputText value="#{anexo.nomeArquivo}" />
+									    </p:column>
+										
+										<p:column headerText="Excluir" style="text-align: center;" width="8%">
+											<p:commandLink ajax="true" process="@this" action="#{consultarNFSEController.excluirAnexo(anexo)}" update="@form:anexos, @form:botoes">
+												<h:outputText value="" title="Excluir" styleClass="fa fa-times" />
+											</p:commandLink>
+										</p:column>
+									</p:dataTable>
+								</p:outputPanel>
 							</div>
-						    <div class="box-footer">
-								<div class="col-sm-4 col-md-4">
-									<p:commandButton
-										styleClass="btn btn-default"
-										icon="fa fa-arrow-left"
-										value="Voltar"
-										id="btn_voltar"
-										process="@this"
-										action="#{consultarNFSEController.voltar()}"
-										immediate="true"
-										ajax="false" />
+							<p:outputPanel id="botoes">
+							    <div class="box-footer">
+									<div class="col-sm-3 col-md-3">
+										<p:commandButton
+											styleClass="btn btn-default"
+											icon="fa fa-arrow-left"
+											value="Voltar"
+											id="btn_voltar"
+											process="@this"
+											action="#{consultarNFSEController.voltar()}"
+											immediate="true"
+											ajax="false" />
+									</div>
+									<div class="col-sm-3 col-md-3">
+										<p:commandButton
+											styleClass="btn btn-default"
+											icon="fa fa-save"
+											value="Salvar"
+											id="btn_upload"
+											action="#{consultarNFSEController.salvarAnexos()}"
+											process="@this"
+											rendered="#{consultarNFSEController.listaAnexo.size() > 0}"
+											ajax="true" />
+									</div>
 								</div>
-							</div>
+							</p:outputPanel>
                        	</div>
 					</p:panel>
 				</h:form>

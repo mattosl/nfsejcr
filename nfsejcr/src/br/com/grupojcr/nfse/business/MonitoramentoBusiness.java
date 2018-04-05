@@ -41,6 +41,12 @@ public class MonitoramentoBusiness {
 	@EJB
 	private UsuarioDAO daoUsuario;
 	
+	/**
+	 * Método responsavel por efetuar a leitura do XML
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @throws ApplicationException
+	 */
 	public void lerXML() throws ApplicationException {
 		try {
 			lerEmail();
@@ -53,6 +59,12 @@ public class MonitoramentoBusiness {
 		
 	}
 	
+	/**
+	 * Método responsavel por efetuar a leitura do e-mail
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @throws Exception
+	 */
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public void lerEmail() throws Exception {
 		try {
@@ -85,6 +97,12 @@ public class MonitoramentoBusiness {
 		}
 	}
 	
+	/**
+	 * Método responsavel por ler os anexos do e-mail
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param message : Message
+	 */
 	public void lerAnexos(Message message) {  
         try { 
             // Get the header information  
@@ -149,6 +167,13 @@ public class MonitoramentoBusiness {
         }  
     }
 	
+	/**
+	 * Método responsavel por verificar se existe anexo no e-mail
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param msg : Message
+	 * @throws MessagingException, IOException
+	 */
 	public boolean hasAttachments(Message msg) throws MessagingException, IOException {
 		if (msg.isMimeType("multipart/mixed")) {
 		    Multipart mp = (Multipart)msg.getContent();

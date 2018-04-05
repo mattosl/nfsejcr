@@ -1,7 +1,9 @@
 package br.com.grupojcr.nfse.controller;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,16 +22,20 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.log4j.Logger;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 
 import br.com.grupojcr.nfse.business.LoginBusiness;
 import br.com.grupojcr.nfse.business.MonitoramentoBusiness;
 import br.com.grupojcr.nfse.business.NFSEBusiness;
+import br.com.grupojcr.nfse.dto.AnexoDTO;
 import br.com.grupojcr.nfse.dto.FiltroConsultaNFSE;
 import br.com.grupojcr.nfse.dto.NotaFiscalServicoDTO;
 import br.com.grupojcr.nfse.entity.Coligada;
 import br.com.grupojcr.nfse.entity.NotaFiscalServico;
+import br.com.grupojcr.nfse.entity.Usuario;
 import br.com.grupojcr.nfse.entity.datamodel.NotaFiscalServicoDataModel;
 import br.com.grupojcr.nfse.entity.xml.ListaNfseXML;
 import br.com.grupojcr.nfse.entity.xml.NfseXML;
@@ -49,20 +56,16 @@ public class ConsultarNFSEController implements Serializable {
 
 	protected static Logger LOG = Logger.getLogger(LoginBusiness.class);
 	private final static String KEY_MENSAGEM_PADRAO = "message.default.erro";
-	
 	private static final long serialVersionUID = 764194435849716691L;
 	
 	private Boolean exibirResultado;
 	
-	private List<String> teste = new ArrayList<String>(Arrays.asList("teste", "teste", "teste", "teste"));
-	private List<String> testeSelecionados = new ArrayList<String>();
-	
 	private List<Coligada> listaColigada;
 	private List<MunicipioIBGE> listaMunicipio;
 	private List<NotaFiscalServico> notasSelecionadas;
+	private List<AnexoDTO> listaAnexo;
 	
 	private FiltroConsultaNFSE filtro;
-	
 	private NotaFiscalServico notaFiscal;
 	private NotaFiscalServicoDTO notaFiscalDTO;
 	
@@ -75,6 +78,12 @@ public class ConsultarNFSEController implements Serializable {
 	@Inject
 	private NotaFiscalServicoDataModel dataModel;
 	
+	/**
+	 * Método responsavel por iniciar processo
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @throws ApplicationException
+	 */
 	public void iniciarProcesso() throws ApplicationException {
 		try {
 			setFiltro(new FiltroConsultaNFSE());
@@ -87,10 +96,17 @@ public class ConsultarNFSEController implements Serializable {
 			LOG.info(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "iniciarProcesso" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel por realizar a pesquisa de nfs-e
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @throws ApplicationException
+	 */
 	public void pesquisar() throws ApplicationException {
 		try {
 			
@@ -108,10 +124,17 @@ public class ConsultarNFSEController implements Serializable {
 			LOG.info(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "pesquisar" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel por inicializar as datas do filtro de pesquisa
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @throws ApplicationException
+	 */
 	public void carregarDatas() throws ApplicationException {
 		try {
 			Calendar calendarioInicial = Calendar.getInstance();
@@ -122,10 +145,17 @@ public class ConsultarNFSEController implements Serializable {
 			getFiltro().setDtInicial(calendarioInicial.getTime());
 			getFiltro().setDtFinal(calendarioFinal.getTime());
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "carregarDatas" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel atualizar as nfs-e recebidas no e-mail
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @throws ApplicationException
+	 */
 	public void atualizar() throws ApplicationException {
 		try {
 			monitoramentoBusiness.lerXML();
@@ -134,10 +164,17 @@ public class ConsultarNFSEController implements Serializable {
 			LOG.info(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "atualizar" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel por carregar os dados da nfse na modal de detalhes
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @throws ApplicationException
+	 */
 	public void detalhar() throws ApplicationException {
 		try {
 			if(Util.isNotNull(getNotaFiscal())) {
@@ -176,20 +213,38 @@ public class ConsultarNFSEController implements Serializable {
 			LOG.info(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "detalhar" }, e);
 		}
 	}
 
+	/**
+	 * Método responsavel por efetuar o download do XML
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param nfs : NotaFiscalServico
+	 * @return StreamedContent
+	 * @throws ApplicationException
+	 */
 	public StreamedContent download(NotaFiscalServico nfs) throws ApplicationException {
 		try {
 			InputStream arquivo = new ByteArrayInputStream(nfs.getXml().getBytes("UTF-8"));
 			String nomeArquivo = TreatDate.format("dd-MM-yyyy", nfs.getDtEmissao()) + "-" + nfs.getNumeroNota() + ".xml";
 			return new DefaultStreamedContent(arquivo, "text/xml", nomeArquivo);
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "download" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel montar a nfse para xml na modal de detalhes
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param xml : NfseXML
+	 * @return NotaFiscalServicoDTO
+	 * @throws ApplicationException
+	 */
 	private NotaFiscalServicoDTO montarNota(NfseXML xml) throws ApplicationException {
 		try {
 			NotaFiscalServicoDTO dto = new NotaFiscalServicoDTO();
@@ -214,32 +269,123 @@ public class ConsultarNFSEController implements Serializable {
 			
 			return dto;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "montarNota" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel por realizar o upload dos XML
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param event : FileUploadEvent
+	 * @throws ApplicationException
+	 */
+	public void doUploadXML(FileUploadEvent event) throws ApplicationException {
+		try {
+			UploadedFile uploadedFile = event.getFile();
+			String fileNameUploaded = uploadedFile.getFileName();
+			AnexoDTO dto = new AnexoDTO();
+			InputStream is = uploadedFile.getInputstream();
+			String xml = "";
+			BufferedReader in = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+			String str;
+			while ((str = in.readLine()) != null) {
+				xml += str;
+			}
+			is.close();
+			dto.setConteudo(xml);
+			dto.setNomeArquivo(fileNameUploaded);
+			getListaAnexo().add(dto);
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "doUploadXML" }, e);
+		}
+	}
+	
+	/**
+	 * Método responsavel por salvar as nfse incluídas manualmente pelo upload
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @return String
+	 * @throws ApplicationException
+	 */
+	public String salvarAnexos() throws ApplicationException {
+		try {
+			Usuario usuario = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("usuario");
+			FacesContext fc = FacesContext.getCurrentInstance();
+			fc.getExternalContext().getFlash().setKeepMessages(true);
+			if(getListaAnexo().size() > 0) {
+				for(AnexoDTO dto : getListaAnexo()) {
+					Boolean valida = nfseBusiness.validarXML(dto.getConteudo());
+					if(!valida) {
+						FacesMessage fm = new FacesMessage(FacesMessage.SEVERITY_FATAL, dto.getNomeArquivo(), "NFS-e não identificada pelo sistema.");
+						fc.addMessage(null, fm);
+					}
+				}
+				if(fc.getMessageList().size() > 0) {
+					return null;
+				}
+				for(AnexoDTO dto : getListaAnexo()) {
+					nfseBusiness.incluirXML(dto.getConteudo(), usuario);
+				}
+			}
+			
+			Message.setMessage("consultarNFSE.incluir.sucesso");
+			
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "salvarAnexos" }, e);
+		}
+		return voltar();
+	}
+	
+	/**
+	 * Método responsavel por remover anexo do upload
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param dto : AnexoDTO
+	 * @throws ApplicationException
+	 */
+	public void excluirAnexo(AnexoDTO dto) throws ApplicationException {
+		try {
+			getListaAnexo().remove(dto);
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "excluirAnexo" }, e);
+		}
+	}
+	
+	/**
+	 * Método responsavel por voltar para tela de pesquisa
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @return String
+	 */
 	public String voltar() {
 		return "/pages/nfse/listar_nfse.xhtml?faces-redirect=true";
 	}
 	
+	/**
+	 * Método responsavel por carregar tela de inclusão de nfse manualmente
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @return String
+	 */
 	public String iniciarIncluir() {
-		return "/pages/nfse/incluir_nfse.xhtml";
+		return "/pages/nfse/incluir_nfse.xhtml?faces-redirect=true";
 	}
-
-	public List<String> getTeste() {
-		return teste;
-	}
-
-	public void setTeste(List<String> teste) {
-		this.teste = teste;
-	}
-
-	public List<String> getTesteSelecionados() {
-		return testeSelecionados;
-	}
-
-	public void setTesteSelecionados(List<String> testeSelecionados) {
-		this.testeSelecionados = testeSelecionados;
+	
+	/**
+	 * Método responsavel por inicializar atributos da tela de inclusão de nfse
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 */
+	public void iniciarAtributos() {
+		setListaAnexo(new ArrayList<AnexoDTO>());
 	}
 
 	public List<Coligada> getListaColigada() {
@@ -304,6 +450,14 @@ public class ConsultarNFSEController implements Serializable {
 
 	public void setNotaFiscalDTO(NotaFiscalServicoDTO notaFiscalDTO) {
 		this.notaFiscalDTO = notaFiscalDTO;
+	}
+
+	public List<AnexoDTO> getListaAnexo() {
+		return listaAnexo;
+	}
+
+	public void setListaAnexo(List<AnexoDTO> listaAnexo) {
+		this.listaAnexo = listaAnexo;
 	}
 
 }

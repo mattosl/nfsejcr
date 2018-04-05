@@ -1,5 +1,6 @@
 package br.com.grupojcr.nfse.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -13,7 +14,7 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "TB_USUARIO")
-public class Usuario {
+public class Usuario implements Serializable {
 	
 	@Id
 	@Column(name = "ID", nullable = false)

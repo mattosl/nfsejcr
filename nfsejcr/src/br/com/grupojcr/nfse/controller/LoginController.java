@@ -65,7 +65,8 @@ public class LoginController implements Serializable {
 				user.setDtUltimoLogin(Calendar.getInstance().getTime());
 				loginBusiness.alterarUsuario(user);
 				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuarioLogado", user.getNome());
-				
+				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", user);
+
 				logado = true;
 				return navegacaoController.redirectToWelcome();
 			} else {

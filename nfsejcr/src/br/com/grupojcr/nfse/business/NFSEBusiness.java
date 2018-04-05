@@ -40,6 +40,14 @@ public class NFSEBusiness {
 	@EJB
 	private ColigadaDAO daoColigada;
 	
+	/**
+	 * Método responsavel por incluir nfse do xml no banco de dados
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param xml : String
+	 * @param usuario : Usuario
+	 * @throws ApplicationException
+	 */
 	public void incluirXML(String xml, Usuario usuario) throws ApplicationException {
 		try {
 			if(TreatString.isNotBlank(xml)) {
@@ -119,6 +127,7 @@ public class NFSEBusiness {
 						}
 					} catch (JAXBException ex) {
 						LOG.info("Nota não mapeada.");
+						throw ex;
 					}
 				}
 			}
@@ -126,10 +135,58 @@ public class NFSEBusiness {
 			LOG.info(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "incluirXML" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel por validar se o xml é mapeado no sistema
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param xml : String
+	 * @return Boolean
+	 * @throws ApplicationException
+	 */
+	public Boolean validarXML(String xml) throws ApplicationException {
+		try {
+			if(TreatString.isNotBlank(xml)) {
+				try {
+					JAXBContext context = JAXBContext.newInstance(NfseXML.class);
+					Unmarshaller unmarshaller = context.createUnmarshaller();
+					NfseXML nfse = (NfseXML) unmarshaller.unmarshal(new StringReader(xml));
+					
+					if(Util.isNotNull(nfse)) {
+						return Boolean.TRUE;
+					}
+				} catch (JAXBException e) {
+					try {
+						JAXBContext context = JAXBContext.newInstance(ListaNfseXML.class);
+						Unmarshaller unmarshaller = context.createUnmarshaller();
+						ListaNfseXML nfse = (ListaNfseXML) unmarshaller.unmarshal(new StringReader(xml));
+						
+						if(Util.isNotNull(nfse)) {
+							return Boolean.TRUE;
+						}
+					} catch (JAXBException ex) {
+						return Boolean.FALSE;
+					}
+				}
+			}
+			return Boolean.FALSE;
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "validarXML" }, e);
+		}
+	}
+	
+	/**
+	 * Método responsavel por listar coligadas ativas
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @return List<Coligada>
+	 * @throws ApplicationException
+	 */
 	public List<Coligada> listarColigadasAtivas() throws ApplicationException {
 		try {
 			return daoColigada.listarColigadasAtivas();
@@ -137,10 +194,19 @@ public class NFSEBusiness {
 			LOG.info(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "listarColigadasAtivas" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel por obter quantidade de nfse no BD
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param filtro : FiltroConsultaNFSE
+	 * @return Integer
+	 * @throws ApplicationException
+	 */
 	public Integer obterQtdNotasServico(FiltroConsultaNFSE filtro) throws ApplicationException {
 		try {
 			return daoNotaFiscalServico.obterQtdNota(filtro);
@@ -148,10 +214,21 @@ public class NFSEBusiness {
 			LOG.info(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "obterQtdNotasServico" }, e);
 		}
 	}
 	
+	/**
+	 * Método responsavel por listar notas de serviço paginadas
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param first : int
+	 * @param pageSize : int
+	 * @param filtro : FiltroConsultaNFSE
+	 * @return List<NotaFiscalServico>
+	 * @throws ApplicationException
+	 */
 	public List<NotaFiscalServico> listarNotaServicoPaginada(int first, int pageSize, FiltroConsultaNFSE filtro) throws ApplicationException {
 		try {
 			return daoNotaFiscalServico.listarNotaServicoPaginada(first, pageSize, filtro);
@@ -159,6 +236,7 @@ public class NFSEBusiness {
 			LOG.info(e.getMessage(), e);
 			throw e;
 		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "listarNotaServicoPaginada" }, e);
 		}
 	}

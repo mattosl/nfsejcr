@@ -20,7 +20,6 @@ import br.com.grupojcr.nfse.util.exception.ApplicationException;
 public class NotaFiscalServicoDAO extends GenericDAO<NotaFiscalServico> {
 	
 	private static Logger log = Logger.getLogger(NotaFiscalServicoDAO.class);
-	private final static String KEY_ERRO = "ERRO:";
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public Integer obterQtdNota(FiltroConsultaNFSE filtro) throws ApplicationException {
@@ -60,7 +59,7 @@ public class NotaFiscalServicoDAO extends GenericDAO<NotaFiscalServico> {
 		} catch (NoResultException nR) {
 			return null;
 		} catch (Exception e) {
-			log.error(KEY_ERRO, e);
+			log.error(e.getMessage(), e);
 			throw new ApplicationException("message.default.erro", new String[] { "obterQtdNota" }, e);
 		}
 	}
@@ -107,7 +106,7 @@ public class NotaFiscalServicoDAO extends GenericDAO<NotaFiscalServico> {
 		} catch (NoResultException nR) {
 			return null;
 		} catch (Exception e) {
-			log.error(KEY_ERRO, e);
+			log.error(e.getMessage(), e);
 			throw new ApplicationException("message.default.erro", new String[] { "listarNotaServicoPaginada" }, e);
 		}
 	}

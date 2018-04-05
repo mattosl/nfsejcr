@@ -17,3 +17,21 @@
 	width: 50%; /* Valor da Largura */
 }
 
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
+    color: #ffffff;
+    text-decoration: none;
+    background-color: #9F262D;
+    background-position: 0px;
+    background-image: -moz-linear-gradient(top, #dd4b39, #9F262D);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#dd4b39), to(#9F262D));
+    background-image: -webkit-linear-gradient(top, #dd4b39, #9F262D);
+    background-image: -o-linear-gradient(top, #dd4b39, #9F262D);
+    background-image: linear-gradient(to bottom, #dd4b39, #9F262D);
+    background-repeat: repeat-x;
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
+}
+
+.ui-state-highlight .ui-icon {
+    background-image: url(/nfsejcr/javax.faces.resource/images/ui-icons_333333_256x240.png.xhtml?ln=primefaces-bootstrap);
+}
+

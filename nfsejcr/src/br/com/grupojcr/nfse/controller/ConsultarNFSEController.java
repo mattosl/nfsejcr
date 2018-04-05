@@ -218,6 +218,10 @@ public class ConsultarNFSEController implements Serializable {
 		}
 	}
 	
+	public String voltar() {
+		return "/pages/nfse/listar_nfse.xhtml?faces-redirect=true";
+	}
+	
 	public String iniciarIncluir() {
 		return "/pages/nfse/incluir_nfse.xhtml";
 	}

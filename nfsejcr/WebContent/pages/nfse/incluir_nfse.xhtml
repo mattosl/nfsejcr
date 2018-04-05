@@ -16,19 +16,39 @@
     	<ui:define name="pageDescription">Incluir</ui:define>
 		<ui:define name="body">
 			<div class="page-content-central ui-fluid">
+				<div class="callout callout-warning">
+					<p><span class="bg-yellow"><i class="fa fa-info-circle"></i></span> Arraste ou selecione arquivos XML das notas fiscais de serviço. <b>Somente arquivos XML são aceitos.</b></p>
+				</div>
 				<h:form id="nfseForm" acceptcharset="ISO-8859-1" lang="pt_BR">
 					<p:panel toggleable="false" id="painelConsulta" styleClass="box box-danger">
 						<div class="box-header with-border">
 	             			<h3 class="box-title">Incluir NFS-e</h3>
 	            		</div>
-					    <h:form>
-					    	<p:fileUpload 
-					    		label="Selecionar" 
-					    		cancelLabel="Cancelar" 
-					    		uploadLabel="Upload" 
-					    		fileUploadListener="#{fileUploadView.handleFileUpload}" mode="advanced" dragDropSupport="true"
-                        		update="messages" sizeLimit="100000" allowTypes="/(\.|\/)(xml|XML)$/" invalidFileMessage="Somente arquivos XML são aceitos" invalidSizeMessage="Tamanho do arquivo não permitido." />
-					    </h:form>
+                       	<div class="form-horizontal">
+                       		<div class="box-body">
+								<div class="form-group">
+							    	<p:fileUpload 
+							    		label="Selecionar" 
+							    		cancelLabel="Cancelar" 
+							    		uploadLabel="Upload" 
+							    		fileUploadListener="#{fileUploadView.handleFileUpload}" mode="advanced" dragDropSupport="true"
+			                       		update="messages" sizeLimit="100000" allowTypes="/(\.|\/)(xml|XML)$/" invalidFileMessage="Somente arquivos XML são aceitos" invalidSizeMessage="Tamanho do arquivo não permitido." />
+								</div>
+							</div>
+						    <div class="box-footer">
+								<div class="col-sm-4 col-md-4">
+									<p:commandButton
+										styleClass="btn btn-default"
+										icon="fa fa-arrow-left"
+										value="Voltar"
+										id="btn_voltar"
+										process="@this"
+										action="#{consultarNFSEController.voltar()}"
+										immediate="true"
+										ajax="false" />
+								</div>
+							</div>
+                       	</div>
 					</p:panel>
 				</h:form>
 			</div>

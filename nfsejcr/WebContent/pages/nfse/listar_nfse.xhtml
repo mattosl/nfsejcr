@@ -136,7 +136,7 @@
 						binding="#{dataTableUtil.lazyDataTable}"
 						disabledSelection="#{nfs.status eq 'REMOVIDO' or nfs.status eq 'EXPORTADO'}" >
 						
-						<p:column selectionMode="multiple" />
+						<p:column selectionMode="multiple" style="text-align: center;" />
 					    <p:column headerText="Situação" style="text-align:center;">
 					    	<span class="label label-#{nfs.status eq 'PENDENTE' ? 'warning' : nfs.status eq 'EXPORTADO' ? 'success' : 'danger' }">#{nfs.status.descricao}</span>
 					    </p:column>

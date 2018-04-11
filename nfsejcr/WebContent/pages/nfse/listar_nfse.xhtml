@@ -127,7 +127,7 @@
 				</h:form>
 				
 				<h:form id="gridForm" acceptcharset="ISO-8859-1" lang="pt_BR">
-					<p:dataTable var="nfs" 
+					<p:dataTable var="nfs" id="tableNfs"
 						value="#{consultarNFSEController.dataModel}" 
 						tableStyle="table-layout: auto; word-break: keep-all;" 
 						selection="#{consultarNFSEController.notasSelecionadas}" 
@@ -199,7 +199,7 @@
 									icon="fa fa-mail-reply"
 									value="Exportar para RM"
 									id="btn_exportar_rm"
-									process="@this"
+									process="@this, @form:tableNfs"
 									action="#{consultarNFSEController.exportarRM()}"
 									update="@form"
 									ajax="true" />

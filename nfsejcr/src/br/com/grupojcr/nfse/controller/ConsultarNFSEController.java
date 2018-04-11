@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -18,8 +19,11 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
@@ -37,9 +41,7 @@ import br.com.grupojcr.nfse.entity.Coligada;
 import br.com.grupojcr.nfse.entity.NotaFiscalServico;
 import br.com.grupojcr.nfse.entity.Usuario;
 import br.com.grupojcr.nfse.entity.datamodel.NotaFiscalServicoDataModel;
-import br.com.grupojcr.nfse.entity.xml.ListaNfseXML;
 import br.com.grupojcr.nfse.entity.xml.NfseXML;
-import br.com.grupojcr.nfse.entity.xml.tcCompNfseXML;
 import br.com.grupojcr.nfse.enumerator.EstiloXML;
 import br.com.grupojcr.nfse.enumerator.MunicipioIBGE;
 import br.com.grupojcr.nfse.util.TreatDate;
@@ -179,27 +181,37 @@ public class ConsultarNFSEController implements Serializable {
 	public void detalhar() throws ApplicationException {
 		try {
 			if(Util.isNotNull(getNotaFiscal())) {
-				if(getNotaFiscal().getEstiloXML().equals(EstiloXML.CURITIBA_UNICA)) {
+				if(getNotaFiscal().getEstiloXML().equals(EstiloXML.CURITIBA)) {
 					try {
-						JAXBContext context = JAXBContext.newInstance(NfseXML.class);
-						Unmarshaller unmarshaller = context.createUnmarshaller();
-						NfseXML nfse = (NfseXML) unmarshaller.unmarshal(new StringReader(getNotaFiscal().getXml()));
-						
-						NotaFiscalServicoDTO dto = montarNota(nfse);
-						dto.setMunicipio(getNotaFiscal().getMunicipio());
-						setNotaFiscalDTO(dto);
-					} catch (JAXBException e) {
-						throw new ApplicationException("message.empty", new String[] {"XML com erro."}, FacesMessage.SEVERITY_ERROR);
-					}
-				} else if(getNotaFiscal().getEstiloXML().equals(EstiloXML.CURITIBA_VARIAS)) {
-					try {
-						JAXBContext context = JAXBContext.newInstance(ListaNfseXML.class);
-						Unmarshaller unmarshaller = context.createUnmarshaller();
-						ListaNfseXML lista = (ListaNfseXML) unmarshaller.unmarshal(new StringReader(getNotaFiscal().getXml()));
-						
-						for(tcCompNfseXML xml : lista.getListaNfse()) {
-							if(xml.getNfse().getInformacaoNota().getNumero().equals(getNotaFiscal().getNumeroNota())) {
-								NotaFiscalServicoDTO dto = montarNota(xml.getNfse());
+						Reader reader = new StringReader(getNotaFiscal().getXml());
+						XMLInputFactory xif = XMLInputFactory.newFactory();
+				        XMLStreamReader xsr = xif.createXMLStreamReader(reader);
+				        List<NfseXML> notas = new ArrayList<NfseXML>();
+				        while(xsr.hasNext()) {
+				        	int next = xsr.next();
+				        	
+				        	switch(next) {
+				        		case XMLStreamReader.START_ELEMENT:
+				        			if(xsr.getLocalName().equalsIgnoreCase("Nfse")) {
+						        		JAXBContext context = JAXBContext.newInstance(NfseXML.class);
+							        	Unmarshaller unmarshaller = context.createUnmarshaller();
+							        	unmarshaller.setSchema(null);
+							        	JAXBElement<NfseXML> nfse = unmarshaller.unmarshal(xsr, NfseXML.class);
+							        	
+							        	if(Util.isNotNull(nfse.getValue())) {
+							        		NfseXML xml = nfse.getValue();
+							        		notas.add(xml);
+							        	}
+						        	}
+				        			break;
+				        		case XMLStreamReader.END_ELEMENT:
+				        			break;
+				        	}
+				        	
+				        }
+				        for(NfseXML xml : notas) {
+							if(xml.getInformacaoNota().getNumero().equals(getNotaFiscal().getNumeroNota())) {
+								NotaFiscalServicoDTO dto = montarNota(xml);
 								dto.setMunicipio(getNotaFiscal().getMunicipio());
 								setNotaFiscalDTO(dto);
 								break;
@@ -354,11 +366,15 @@ public class ConsultarNFSEController implements Serializable {
 	public void exportarRM() throws ApplicationException {
 		try {
 			
+			if(getNotasSelecionadas().size() == 0) {
+				throw new ApplicationException("consultarNFSE.exportar.nenhum.selecionado", FacesMessage.SEVERITY_WARN);
+			}
+			
 			Message.setMessage("consultarNFSE.exportar.sucesso");
 			
-//		} catch (ApplicationException e) {
-//			LOG.info(e.getMessage(), e);
-//			throw e;
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "exportarRM" }, e);

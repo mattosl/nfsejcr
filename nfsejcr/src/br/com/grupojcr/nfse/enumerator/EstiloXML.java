@@ -1,8 +1,7 @@
 package br.com.grupojcr.nfse.enumerator;
 
 public enum EstiloXML {
-	CURITIBA_UNICA(0),
-	CURITIBA_VARIAS(1);
+	CURITIBA(0);
 	
 	private Integer id;
 	

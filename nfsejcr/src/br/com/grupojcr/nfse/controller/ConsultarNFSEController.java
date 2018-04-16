@@ -370,7 +370,11 @@ public class ConsultarNFSEController implements Serializable {
 				throw new ApplicationException("consultarNFSE.exportar.nenhum.selecionado", FacesMessage.SEVERITY_WARN);
 			}
 			
-			Message.setMessage("consultarNFSE.exportar.sucesso");
+			Boolean exportou = nfseBusiness.exportarRM(getNotasSelecionadas());
+			
+			if(exportou) {
+				Message.setMessage("consultarNFSE.exportar.sucesso");
+			}
 			
 		} catch (ApplicationException e) {
 			LOG.info(e.getMessage(), e);

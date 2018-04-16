@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import br.com.grupojcr.nfse.dao.ColigadaDAO;
 import br.com.grupojcr.nfse.dao.NotaFiscalServicoDAO;
+import br.com.grupojcr.nfse.dao.RMDAO;
 import br.com.grupojcr.nfse.dto.FiltroConsultaNFSE;
 import br.com.grupojcr.nfse.entity.Coligada;
 import br.com.grupojcr.nfse.entity.NotaFiscalServico;
@@ -41,6 +42,9 @@ public class NFSEBusiness {
 	
 	@EJB
 	private ColigadaDAO daoColigada;
+	
+	@EJB
+	private RMDAO daoRM;
 	
 	/**
 	 * Método responsavel por incluir nfse do xml no banco de dados
@@ -231,6 +235,28 @@ public class NFSEBusiness {
 		} catch (Exception e) {
 			LOG.error(e.getMessage(), e);
 			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "listarNotaServicoPaginada" }, e);
+		}
+	}
+	
+	/**
+	 * Método responsavel por listar notas de serviço paginadas
+	 * @author Leonan Mattos <leonan.mattos@grupojcr.com.br>
+	 * @since 05/04/2018
+	 * @param first : int
+	 * @param pageSize : int
+	 * @param filtro : FiltroConsultaNFSE
+	 * @return List<NotaFiscalServico>
+	 * @throws ApplicationException
+	 */
+	public Boolean exportarRM(List<NotaFiscalServico> notasFiscais) throws ApplicationException {
+		try {
+			return daoRM.testarConexao();
+		} catch (ApplicationException e) {
+			LOG.info(e.getMessage(), e);
+			throw e;
+		} catch (Exception e) {
+			LOG.error(e.getMessage(), e);
+			throw new ApplicationException(KEY_MENSAGEM_PADRAO, new String[] { "exportarRM" }, e);
 		}
 	}
 }

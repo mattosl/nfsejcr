@@ -9,4 +9,12 @@
 		</properties>
 	</persistence-unit>
 	
+	<persistence-unit name="corporeRM">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<jta-data-source>java:jboss/datasources/corporeRMDS</jta-data-source>
+		<properties>
+			<property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect" />
+		</properties>
+	</persistence-unit>
+	
 </persistence>
